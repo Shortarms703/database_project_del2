@@ -1,3 +1,6 @@
+DROP TABLE Chain;
+DROP TABLE Employee;
+
 CREATE TABLE Chain (
     name VARCHAR(50) PRIMARY KEY,
     street VARCHAR(50),
@@ -49,7 +52,8 @@ CREATE TABLE Customer(
 );
 
 CREATE TABLE Employee(
-    employee_id VARCHAR(50) PRIMARY KEY,
+    employee_ID INTEGER PRIMARY KEY,
+    password VARCHAR(50),
     hotel_id VARCHAR(50), -- can be null?
     SIN VARCHAR(9) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
@@ -59,7 +63,7 @@ CREATE TABLE Employee(
     postal_code VARCHAR(50),
     country VARCHAR(50),
     position VARCHAR(20), -- unsure
-     FOREIGN KEY(hotel_id) REFERENCES Hotel(hotel_id)
+    FOREIGN KEY(hotel_id) REFERENCES Hotel(hotel_id)
 );
 
 CREATE TABLE Book(
