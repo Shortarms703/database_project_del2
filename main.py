@@ -1,8 +1,9 @@
 import db
 
-from flask import Flask, request, render_template, sessions
+from flask import Flask, request, render_template, session, redirect, url_for
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = 'f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae0a'
 
 
 def setup():
@@ -11,9 +12,39 @@ def setup():
 
 # LOGIN STUFF
 
-@app.route('/')
+
+@app.route('/', methods=['GET', 'POST'])
 def welcome():
+    if request.method == 'POST':
+
+        # Handle the case where the "login" button was clicked
+        if 'login' in request.form:
+            session["login_or_create"] = "login"
+
+        # Handle the case where the "create_new_account" button was clicked
+        elif 'create_new_account' in request.form:
+            session["login_or_create"] = "create_new_account"
+
+        return redirect(url_for("cust_or_emp"))
+
     return render_template("welcome.html")
+
+@app.route('/cust_or_emp', methods=['GET', 'POST'])
+def cust_or_emp():
+    if request.method == 'POST':
+
+        # Handle the case where the "employee" button was clicked
+        if 'employee' in request.form:
+            session["cust_or_emp"] = "employee"
+
+        # Handle the case where the "customer" button was clicked
+        elif 'customer' in request.form:
+            session["cust_or_emp"] = "customer"
+
+        #to do, figure out where to redirect and than do it in the function below
+        #return redirect(url_for("cust_or_emp"))
+
+    return render_template("cust_or_emplo.html")
 
 
 @app.route('/login')
@@ -46,60 +77,59 @@ def book_room():
     return render_template('book_room.html')
 
 
-@app.route('customer_view_rooms')
+@app.route('/customer_view_rooms')
 def customer_view_rooms():
     # check that user is customer
     list_of_rooms = []  # a list of only the rooms that the customer has booked/rented
     return render_template('room_list.html', rooms=list_of_rooms)
 
 
-@app.route('customer_account')
+@app.route('/customer_account')
 def customer_account():
     return render_template('customer_details.html')
 
 
 # EMPLOYEE STUFF
 
-@app.route('rent_room')
+@app.route('/rent_room')
 def rent_room():
     list_of_rooms = []
     return render_template('room_list.html', rooms=list_of_rooms)
 
 
-@app.route('employee_account')
+@app.route('/employee_account')
 def employee_account():
     return render_template('employee_details.html')
 
 
 # MANAGER STUFF
 
-@app.route('edit_hotel')
+@app.route('/edit_hotel')
 def edit_hotel():
     # edit/delete hotel
     return render_template('edit_hotel.html')
 
 
-@app.route('add_hotel')
+@app.route('/add_hotel')
 def add_hotel():
     return render_template('add_hotel.html')
 
 
-@app.route('room_list')
+@app.route('/room_list')
 def room_list():
     list_of_rooms = []
     return render_template('room_list.html', rooms=list_of_rooms)
 
 
-@app.route('edit_room')
+@app.route('/edit_room')
 def edit_room():
     return render_template('edit_room_info.html')
 
 
-@app.route('add_room')
+@app.route('/add_room')
 def add_room():
     return render_template('add_room.html')
 
 
 if __name__ == '__main__':
-    app.secret_key('f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae0a')
     app.run()

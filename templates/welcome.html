@@ -7,8 +7,10 @@
 <body>
 Welcome
 <br>
-<button onclick="window.location.href='{{ url_for("login") }}'">Login</button>
-<button onclick="window.location.href='{{ url_for("create_customer") }}'">Create new Customer account</button>
-<button onclick="window.location.href='{{ url_for("create_employee") }}'">Create new Employee account</button>
+<form method="POST">
+    <button type="submit" name="action" value="login">Login</button>
+    <button type="submit" name="action" value="create_new_account">Create new account</button>
+</form>
+
 </body>
 </html>
