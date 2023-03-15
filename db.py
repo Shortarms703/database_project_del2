@@ -28,3 +28,5 @@ def init_db():
     execute_file(config.sql_index_file)
     execute_file(config.sql_views_file)
 
+if __name__ == '__main__':
+    execute_file(config.schema_file)
