@@ -59,7 +59,6 @@ CREATE TABLE Customer(
 
 CREATE TABLE Employee(
     employee_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    password VARCHAR(50),
     hotel_id VARCHAR(50), -- can be null?
     SIN VARCHAR(9) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
