@@ -1,1 +1,1 @@
-INSERT INTO Chain VALUES ("chain1", "street", "city", "postal_code", "country", "email", "phone_number")
+INSERT INTO Chain VALUES ('hi', 'street', 'city', 'postal_code', 'country', 'email', 'phone_number')

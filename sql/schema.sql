@@ -1,9 +1,9 @@
+DROP TABLE Book;
 DROP TABLE Chain;
 DROP TABLE Hotel;
 DROP TABLE Room;
 DROP TABLE Customer;
 DROP TABLE Employee;
-DROP TABLE Book;
 DROP TABLE Rent;
 
 CREATE TABLE Chain (
