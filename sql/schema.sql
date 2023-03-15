@@ -1,5 +1,10 @@
 DROP TABLE Chain;
+DROP TABLE Hotel;
+DROP TABLE Room;
+DROP TABLE Customer;
 DROP TABLE Employee;
+DROP TABLE Book;
+DROP TABLE Rent;
 
 CREATE TABLE Chain (
     name VARCHAR(50) PRIMARY KEY,
@@ -12,7 +17,7 @@ CREATE TABLE Chain (
 );
 
 CREATE TABLE Hotel (
-    hotel_id VARCHAR(50) PRIMARY KEY, -- unsure
+    hotel_id INTEGER PRIMARY KEY AUTO_INCREMENT, -- unsure
     chain_name VARCHAR(50), -- can be null?
     hotel_name VARCHAR(50) NOT NULL,
     star_num TINYINT,
@@ -38,7 +43,7 @@ CREATE TABLE Room (
 );
 
 CREATE TABLE Customer(
-    customer_id VARCHAR(50) PRIMARY KEY,
+    customer_id INTEGER PRIMARY KEY AUTO_INCREMENT,
     hotel_id VARCHAR(50),
     SIN VARCHAR(9) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
@@ -52,7 +57,7 @@ CREATE TABLE Customer(
 );
 
 CREATE TABLE Employee(
-    employee_ID INTEGER PRIMARY KEY,
+    employee_ID INTEGER PRIMARY KEY AUTO_INCREMENT,
     password VARCHAR(50),
     hotel_id VARCHAR(50), -- can be null?
     SIN VARCHAR(9) NOT NULL,
@@ -67,7 +72,7 @@ CREATE TABLE Employee(
 );
 
 CREATE TABLE Book(
-    book_id VARCHAR(50) PRIMARY KEY,
+    book_id INTEGER PRIMARY KEY AUTO_INCREMENT,
     room_num SMALLINT NOT NULL,
     customer_id VARCHAR(50) NOT NULL,
     start_date DATE NOT NULL,
@@ -77,7 +82,7 @@ CREATE TABLE Book(
 );
 
 CREATE TABLE Rent(
-    rent_id VARCHAR(50) PRIMARY KEY,
+    rent_id INTEGER PRIMARY KEY AUTO_INCREMENT,
     room_num SMALLINT NOT NULL,
     customer_id VARCHAR(50) NOT NULL,
     start_date DATE NOT NULL,
