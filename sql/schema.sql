@@ -1,5 +1,10 @@
+DROP TABLE Book;
 DROP TABLE Chain;
+DROP TABLE Customer;
 DROP TABLE Employee;
+DROP TABLE Hotel;
+DROP TABLE Rent;
+DROP TABLE Room;
 
 CREATE TABLE Chain (
     name VARCHAR(50) PRIMARY KEY,

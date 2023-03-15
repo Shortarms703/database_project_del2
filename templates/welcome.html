@@ -5,8 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-welcome
+Welcome
+<br>
 <button onclick="window.location.href='{{ url_for("login") }}'">Login</button>
-<button onclick="">Create</button>
+<button onclick="window.location.href='{{ url_for("create_customer") }}'">Create new Customer account</button>
+<button onclick="window.location.href='{{ url_for("create_employee") }}'">Create new Employee account</button>
 </body>
 </html>
