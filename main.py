@@ -1,6 +1,6 @@
 import db
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, sessions
 
 app = Flask(__name__)
 
@@ -13,8 +13,6 @@ def setup():
 
 @app.route('/')
 def welcome():
-    if request.method == 'POST':
-        print("post")
     return render_template("welcome.html")
 
 
@@ -103,4 +101,5 @@ def add_room():
 
 
 if __name__ == '__main__':
+    app.secret_key('f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae0a')
     app.run()
