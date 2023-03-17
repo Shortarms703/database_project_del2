@@ -10,20 +10,20 @@ CREATE TABLE Chain (
     name VARCHAR(50) PRIMARY KEY,
     street VARCHAR(50),
     city VARCHAR(50),
-    postal_code VARCHAR(50),
+    postal_code INTEGER,
     country VARCHAR(50),
     email VARCHAR(50),
     phone_number VARCHAR(50)
 );
 
 CREATE TABLE Hotel (
-    hotel_id INTEGER PRIMARY KEY AUTOINCREMENT, -- unsure
-    chain_name VARCHAR(50), -- can be null?
+    hotel_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    chain_name VARCHAR(50),
     hotel_name VARCHAR(50) NOT NULL,
     star_num TINYINT,
     street VARCHAR(50),
     city VARCHAR(50),
-    postal_code VARCHAR(50),
+    postal_code INTEGER,
     country VARCHAR(50),
     email VARCHAR(50),
     phone_number VARCHAR(50),
@@ -32,7 +32,7 @@ CREATE TABLE Hotel (
 
 CREATE TABLE Room (
     room_num SMALLINT PRIMARY KEY,
-    hotel_id VARCHAR(50) NOT NULL,
+    hotel_id INTEGER NOT NULL,
     price NUMERIC(6, 2) NOT NULL,
     capacity TINYINT NOT NULL,
     view VARCHAR(50) NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE Room (
 
 CREATE TABLE Customer(
     customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    hotel_id VARCHAR(50),
+    hotel_id INTEGER,
     SIN VARCHAR(9) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE Customer(
 CREATE TABLE Employee(
     employee_ID INTEGER PRIMARY KEY AUTOINCREMENT,
     password VARCHAR(50),
-    hotel_id VARCHAR(50), -- can be null?
+    hotel_id INTEGER, -- can be null?
     SIN VARCHAR(9) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE Employee(
 CREATE TABLE Book(
     book_id INTEGER PRIMARY KEY AUTOINCREMENT,
     room_num SMALLINT NOT NULL,
-    customer_id VARCHAR(50) NOT NULL,
+    customer_id INTEGER NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     FOREIGN KEY(room_num) REFERENCES Room(room_num),
@@ -84,7 +84,7 @@ CREATE TABLE Book(
 CREATE TABLE Rent(
     rent_id INTEGER PRIMARY KEY AUTOINCREMENT,
     room_num SMALLINT NOT NULL,
-    customer_id VARCHAR(50) NOT NULL,
+    customer_id INTEGER NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
 	FOREIGN KEY(room_num) REFERENCES Room(room_num),
