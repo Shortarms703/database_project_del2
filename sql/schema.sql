@@ -17,8 +17,8 @@ CREATE TABLE Chain (
 );
 
 CREATE TABLE Hotel (
-    hotel_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    chain_name VARCHAR(50),
+    hotel_id INTEGER PRIMARY KEY AUTOINCREMENT, -- unsure
+    chain_name VARCHAR(50) NOT NULL,
     hotel_name VARCHAR(50) NOT NULL,
     star_num TINYINT,
     street VARCHAR(50),
@@ -35,7 +35,7 @@ CREATE TABLE Room (
     hotel_id INTEGER NOT NULL,
     price NUMERIC(6, 2) NOT NULL,
     capacity TINYINT NOT NULL,
-    view VARCHAR(50) NOT NULL,
+    "view" VARCHAR(50) NOT NULL,
     amenities VARCHAR(50),
     problems VARCHAR(50),
     extendable BOOLEAN NOT NULL,
@@ -44,6 +44,7 @@ CREATE TABLE Room (
 
 CREATE TABLE Customer(
     customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    password VARCHAR(50),
     hotel_id INTEGER,
     SIN VARCHAR(9) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
