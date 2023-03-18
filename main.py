@@ -75,6 +75,17 @@ def create_employee():
 
 @app.route('/room_search')
 def room_search():
+    if request.method == "POST":
+        search = request.form["search"]
+        start_date = request.form["start_date"]
+        end_date = request.form["end_date"]
+        room_capacity = request.form["room_capacity"]
+        area = request.form["area"]
+        hotel_chain = request.form["hotel_chain"]
+        hotel_stars = request.form["hotel_stars"]
+        num_rooms_in_hotel = request.form["num_rooms_in_hotel"]
+        price_of_room = request.form["price_of_room"]
+
     # checks that you are logged in as a customer
     list_of_rooms = []  # list of rooms depending on what is being searched for
     return render_template('room_list.html', rooms=list_of_rooms)

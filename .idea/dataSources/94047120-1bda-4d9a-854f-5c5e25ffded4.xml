@@ -1423,65 +1423,382 @@
     <argument id="503" parent="172">
       <Position>1</Position>
     </argument>
-    <table id="504" parent="173" name="Chain"/>
-    <table id="505" parent="173" name="sqlite_master">
+    <table id="504" parent="173" name="Book"/>
+    <table id="505" parent="173" name="Chain"/>
+    <table id="506" parent="173" name="Customer"/>
+    <table id="507" parent="173" name="Employee"/>
+    <table id="508" parent="173" name="Hotel"/>
+    <table id="509" parent="173" name="Rent"/>
+    <table id="510" parent="173" name="Room"/>
+    <table id="511" parent="173" name="sqlite_master">
       <System>1</System>
     </table>
-    <column id="506" parent="504" name="name">
+    <column id="512" parent="504" name="book_id">
       <DasType>VARCHAR(50)|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="507" parent="504" name="street">
+    <column id="513" parent="504" name="room_num">
+      <DasType>SMALLINT|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="514" parent="504" name="customer_id">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="515" parent="504" name="start_date">
+      <DasType>DATE|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="516" parent="504" name="end_date">
+      <DasType>DATE|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <foreign-key id="517" parent="504">
+      <ColNames>room_num</ColNames>
+      <RefColNames>room_num</RefColNames>
+      <RefTableName>Room</RefTableName>
+    </foreign-key>
+    <foreign-key id="518" parent="504">
+      <ColNames>customer_id</ColNames>
+      <RefColNames>customer_id</RefColNames>
+      <RefTableName>Customer</RefTableName>
+    </foreign-key>
+    <index id="519" parent="504" name="sqlite_autoindex_Book_1">
+      <ColNames>book_id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Unique>1</Unique>
+    </index>
+    <key id="520" parent="504">
+      <ColNames>book_id</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Book_1</UnderlyingIndexName>
+    </key>
+    <column id="521" parent="505" name="name">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="522" parent="505" name="street">
       <DasType>VARCHAR(50)|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="508" parent="504" name="city">
+    <column id="523" parent="505" name="city">
       <DasType>VARCHAR(50)|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="509" parent="504" name="postal_code">
+    <column id="524" parent="505" name="postal_code">
       <DasType>VARCHAR(50)|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="510" parent="504" name="country">
+    <column id="525" parent="505" name="country">
       <DasType>VARCHAR(50)|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="511" parent="504" name="email">
+    <column id="526" parent="505" name="email">
       <DasType>VARCHAR(50)|0s</DasType>
       <Position>6</Position>
     </column>
-    <column id="512" parent="504" name="phone_number">
+    <column id="527" parent="505" name="phone_number">
       <DasType>VARCHAR(50)|0s</DasType>
       <Position>7</Position>
     </column>
-    <index id="513" parent="504" name="sqlite_autoindex_Chain_1">
+    <index id="528" parent="505" name="sqlite_autoindex_Chain_1">
       <ColNames>name</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <key id="514" parent="504">
+    <key id="529" parent="505">
       <ColNames>name</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>sqlite_autoindex_Chain_1</UnderlyingIndexName>
     </key>
-    <column id="515" parent="505" name="type">
+    <column id="530" parent="506" name="customer_id">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="531" parent="506" name="hotel_id">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="532" parent="506" name="SIN">
+      <DasType>VARCHAR(9)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="533" parent="506" name="first_name">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="534" parent="506" name="last_name">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="535" parent="506" name="street">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>6</Position>
+    </column>
+    <column id="536" parent="506" name="city">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>7</Position>
+    </column>
+    <column id="537" parent="506" name="postal_code">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>8</Position>
+    </column>
+    <column id="538" parent="506" name="country">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>9</Position>
+    </column>
+    <column id="539" parent="506" name="registration_date">
+      <DasType>DATE|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>10</Position>
+    </column>
+    <foreign-key id="540" parent="506">
+      <ColNames>hotel_id</ColNames>
+      <RefColNames>hotel_id</RefColNames>
+      <RefTableName>Hotel</RefTableName>
+    </foreign-key>
+    <index id="541" parent="506" name="sqlite_autoindex_Customer_1">
+      <ColNames>customer_id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Unique>1</Unique>
+    </index>
+    <key id="542" parent="506">
+      <ColNames>customer_id</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Customer_1</UnderlyingIndexName>
+    </key>
+    <column id="543" parent="507" name="employee_ID">
+      <DasType>INTEGER|0s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="544" parent="507" name="password">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="545" parent="507" name="hotel_id">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="546" parent="507" name="SIN">
+      <DasType>VARCHAR(9)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="547" parent="507" name="first_name">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="548" parent="507" name="last_name">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <column id="549" parent="507" name="street">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>7</Position>
+    </column>
+    <column id="550" parent="507" name="city">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>8</Position>
+    </column>
+    <column id="551" parent="507" name="postal_code">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>9</Position>
+    </column>
+    <column id="552" parent="507" name="country">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>10</Position>
+    </column>
+    <column id="553" parent="507" name="position">
+      <DasType>VARCHAR(20)|0s</DasType>
+      <Position>11</Position>
+    </column>
+    <foreign-key id="554" parent="507">
+      <ColNames>hotel_id</ColNames>
+      <RefColNames>hotel_id</RefColNames>
+      <RefTableName>Hotel</RefTableName>
+    </foreign-key>
+    <key id="555" parent="507">
+      <ColNames>employee_ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="556" parent="508" name="hotel_id">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="557" parent="508" name="chain_name">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="558" parent="508" name="hotel_name">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="559" parent="508" name="star_num">
+      <DasType>TINYINT|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="560" parent="508" name="street">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>5</Position>
+    </column>
+    <column id="561" parent="508" name="city">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>6</Position>
+    </column>
+    <column id="562" parent="508" name="postal_code">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>7</Position>
+    </column>
+    <column id="563" parent="508" name="country">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>8</Position>
+    </column>
+    <column id="564" parent="508" name="email">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>9</Position>
+    </column>
+    <column id="565" parent="508" name="phone_number">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>10</Position>
+    </column>
+    <foreign-key id="566" parent="508">
+      <ColNames>chain_name</ColNames>
+      <RefColNames>name</RefColNames>
+      <RefTableName>Chain</RefTableName>
+    </foreign-key>
+    <index id="567" parent="508" name="sqlite_autoindex_Hotel_1">
+      <ColNames>hotel_id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Unique>1</Unique>
+    </index>
+    <key id="568" parent="508">
+      <ColNames>hotel_id</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Hotel_1</UnderlyingIndexName>
+    </key>
+    <column id="569" parent="509" name="rent_id">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="570" parent="509" name="room_num">
+      <DasType>SMALLINT|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="571" parent="509" name="customer_id">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="572" parent="509" name="start_date">
+      <DasType>DATE|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="573" parent="509" name="end_date">
+      <DasType>DATE|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <foreign-key id="574" parent="509">
+      <ColNames>room_num</ColNames>
+      <RefColNames>room_num</RefColNames>
+      <RefTableName>Room</RefTableName>
+    </foreign-key>
+    <foreign-key id="575" parent="509">
+      <ColNames>customer_id</ColNames>
+      <RefColNames>customer_id</RefColNames>
+      <RefTableName>Customer</RefTableName>
+    </foreign-key>
+    <index id="576" parent="509" name="sqlite_autoindex_Rent_1">
+      <ColNames>rent_id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Unique>1</Unique>
+    </index>
+    <key id="577" parent="509">
+      <ColNames>rent_id</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Rent_1</UnderlyingIndexName>
+    </key>
+    <column id="578" parent="510" name="room_num">
+      <DasType>SMALLINT|0s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="579" parent="510" name="hotel_id">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="580" parent="510" name="price">
+      <DasType>NUMERIC(6,2)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="581" parent="510" name="capacity">
+      <DasType>TINYINT|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="582" parent="510" name="view">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="583" parent="510" name="amenities">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>6</Position>
+    </column>
+    <column id="584" parent="510" name="problems">
+      <DasType>VARCHAR(50)|0s</DasType>
+      <Position>7</Position>
+    </column>
+    <column id="585" parent="510" name="extendable">
+      <DasType>BOOLEAN|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+    </column>
+    <foreign-key id="586" parent="510">
+      <ColNames>hotel_id</ColNames>
+      <RefColNames>hotel_id</RefColNames>
+      <RefTableName>Hotel</RefTableName>
+    </foreign-key>
+    <index id="587" parent="510" name="sqlite_autoindex_Room_1">
+      <ColNames>room_num</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Unique>1</Unique>
+    </index>
+    <key id="588" parent="510">
+      <ColNames>room_num</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Room_1</UnderlyingIndexName>
+    </key>
+    <column id="589" parent="511" name="type">
       <DasType>TEXT|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="516" parent="505" name="name">
+    <column id="590" parent="511" name="name">
       <DasType>TEXT|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="517" parent="505" name="tbl_name">
+    <column id="591" parent="511" name="tbl_name">
       <DasType>TEXT|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="518" parent="505" name="rootpage">
+    <column id="592" parent="511" name="rootpage">
       <DasType>INT|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="519" parent="505" name="sql">
+    <column id="593" parent="511" name="sql">
       <DasType>TEXT|0s</DasType>
       <Position>5</Position>
     </column>
