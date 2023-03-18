@@ -1,6 +1,11 @@
+from datetime import datetime
+
 import db
 
 from flask import Flask, request, render_template, session, redirect, url_for
+
+from classes.customer import Customer
+from classes.employee import Employee
 
 app = Flask(__name__)
 app.secret_key = 'f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae0a'
@@ -63,14 +68,39 @@ def login():
 
 @app.route('/create_customer')
 def create_customer():
+    if request.method == "POST":
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        password = request.form["password"]
+        sin = request.form["sin"]
+        street = request.form["street"]
+        city = request.form["city"]
+        postal_code = request.form["postal_code"]
+        country = request.form["country"]
+        #make sure to change this with the db function
+        hotel_name = "for now"
+        current_customer = Customer(None, sin, hotel_name, first_name, last_name, datetime.today().strftime('%Y-%m-%d'), street, city, postal_code, country, password)
     return render_template('create_customer.html')
+
 
 
 @app.route('/create_employee')
 def create_employee():
+    if request.method == "POST":
+        position = request.form["position"]
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        password = request.form["password"]
+        sin = request.form["sin"]
+        street = request.form["street"]
+        city = request.form["city"]
+        postal_code = request.form["postal_code"]
+        country = request.form["country"]
+        # make sure to change this with the db function
+        hotel_name = "for now"
+        current_emploee = Employee(None, sin, first_name, last_name, hotel_name, password, None, street, city, postal_code, country, position)
+
     return render_template('create_employee.html')
-
-
 # CUSTOMER STUFF
 
 @app.route('/room_search')
