@@ -3,7 +3,7 @@ import db
 from flask import Flask, request, render_template, session, redirect, url_for
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = 'f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae0a'
+app.secret_key = 'f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae0a'
 
 
 def setup():
@@ -20,7 +20,6 @@ def welcome():
         # Handle the case where the "login" button was clicked
         if 'login' in request.form:
             session["login_or_create"] = "login"
-
         # Handle the case where the "create_new_account" button was clicked
         elif 'create_new_account' in request.form:
             session["login_or_create"] = "create_new_account"
@@ -40,15 +39,22 @@ def cust_or_emp():
         # Handle the case where the "customer" button was clicked
         elif 'customer' in request.form:
             session["cust_or_emp"] = "customer"
-
-        #to do, figure out where to redirect and than do it in the function below
-        #return redirect(url_for("cust_or_emp"))
+        if session["login_or_create"] == "login":
+            return redirect(url_for("login"))
+        if session["login_or_create"] == "create_new_account":
+            if session["cust_or_emp"] == "employee":
+                return redirect(url_for("create_employee"))
+            if session["cust_or_emp"] == "customer":
+                return redirect(url_for("create_customer"))
 
     return render_template("cust_or_emplo.html")
 
 
+
 @app.route('/login')
 def login():
+
+
     return render_template('login.html')
 
 
