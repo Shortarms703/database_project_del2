@@ -47,6 +47,9 @@ def cust_or_emp():
             if session["cust_or_emp"] == "customer":
                 return redirect(url_for("create_customer"))
 
+        # to do, figure out where to redirect and then do it in the function below
+        # return redirect(url_for("cust_or_emp"))
+
     return render_template("cust_or_emplo.html")
 
 

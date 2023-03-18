@@ -5,6 +5,33 @@
     <title>Title</title>
 </head>
 <body>
+<div>
+    <form>
+        <input name="search" placeholder="Search" type="search">
+        <br>
+        Start date: <input name="start_date" type="date">
+        End date: <input name="end_date" type="date">
+        <br>
+        Room capacity: <input name="room_capacity" type="text" size="5  ">
+        Area: <input name="area" type="text">
+        Hotel Chain: <input name="hotel_chain" type="text">
+        Hotel Stars:
+        <select name="hotel_stars">
+            <option value="none"></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        Number of rooms in hotel: <input name="num_rooms_in_hotel" type="number">
+        Price of room: <input name="price_of_room" type="number">
+
+        <br>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
 list of rooms
 <br>
 {% for room in rooms %}
