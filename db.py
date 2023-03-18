@@ -31,7 +31,7 @@ def init_db():
     # execute_file(config.sql_views_file)
 
 def db_room_search(search, start_date, end_date, room_capacity, area, hotel_chain, hotel_stars, num_rooms_in_hotel, price_of_room):
-
+    pass
 
 
 if __name__ == '__main__':

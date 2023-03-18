@@ -1,6 +1,6 @@
 class Customer:
 
-    def __init__(self, customer_id, SIN, first_name, last_name, registration_date, hotel_id = None, street = None, city = None, postal_code = None, country = None, password = None):
+    def __init__(self, customer_id, SIN, hotel_id, first_name, last_name, registration_date, street = None, city = None, postal_code = None, country = None, password = None):
         self.customer_id = customer_id
         self.hotel_id = hotel_id
         self.SIN = SIN
@@ -12,3 +12,4 @@ class Customer:
         self.country = country
         self.registration_date = registration_date
         self.password = password
+
