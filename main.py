@@ -4,8 +4,8 @@ import db
 
 from flask import Flask, request, render_template, session, redirect, url_for
 
-from classes.customer import Customer
-from classes.employee import Employee
+from classes import Book, Chain, Customer, Employee, Hotel, Rent, Room
+
 
 app = Flask(__name__)
 app.secret_key = 'f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae0a'
@@ -53,8 +53,6 @@ def cust_or_emp():
             if session["cust_or_emp"] == "customer":
                 return redirect(url_for("create_customer"))
 
-        # to do, figure out where to redirect and then do it in the function below
-        # return redirect(url_for("cust_or_emp"))
 
     return render_template("cust_or_emplo.html")
 
