@@ -33,6 +33,7 @@ def welcome():
 
     return render_template("welcome.html")
 
+
 @app.route('/cust_or_emp', methods=['GET', 'POST'])
 def cust_or_emp():
     if request.method == 'POST':
@@ -52,7 +53,6 @@ def cust_or_emp():
             if session["cust_or_emp"] == "customer":
                 return redirect(url_for("create_customer"))
     return render_template("cust_or_emplo.html")
-
 
 
 @app.route('/login')
@@ -100,7 +100,6 @@ def create_employee():
 @app.route('/room_search')
 def room_search():
     if request.method == "POST":
-        search = request.form["search"]
         start_date = request.form["start_date"]
         end_date = request.form["end_date"]
         room_capacity = request.form["room_capacity"]
@@ -109,6 +108,9 @@ def room_search():
         hotel_stars = request.form["hotel_stars"]
         num_rooms_in_hotel = request.form["num_rooms_in_hotel"]
         price_of_room = request.form["price_of_room"]
+
+        list_of_rooms = db.db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel_stars,
+                                          num_rooms_in_hotel, price_of_room)
 
     # checks that you are logged in as a customer
     list_of_rooms = []  # list of rooms depending on what is being searched for
