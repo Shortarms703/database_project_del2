@@ -6,38 +6,40 @@
 </head>
 <body>
 <div>
-    <form>
-        <input name="search" placeholder="Search" type="search">
+    <form method="POST">
+        {#        <input name="search" placeholder="Search" type="search">#}
+        {#        <br>#}
+        {#        <br>#}
+        Start date: <input name="start_date" type="date" value="{{ start_date if start_date else "" }}">
+        End date: <input name="end_date" type="date" value="{{ end_date if end_date else "" }}">
         <br>
         <br>
-        Start date: <input name="start_date" type="date">
-        End date: <input name="end_date" type="date">
+        Room capacity: <input name="room_capacity" type="text" size="5"
+                              value="{{ room_capacity if room_capacity else "" }}">
         <br>
         <br>
-        Room capacity: <input name="room_capacity" type="text" size="5  ">
+        Area: <input name="area" type="text" value="{{ area if area else "" }}">
         <br>
         <br>
-        Area: <input name="area" type="text">
-        <br>
-        <br>
-        Hotel Chain: <input name="hotel_chain" type="text">
+        Hotel Chain: <input name="hotel_chain" type="text" value="{{ hotel_chain if hotel_chain else "" }}">
         <br>
         <br>
         Hotel Stars:
         <select name="hotel_stars">
             <option value="none"></option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
+            <option value="1" {{ "selected" if hotel_stars == 1 }}>1</option>
+            <option value="2" {{ "selected" if hotel_stars == 2 }}>2</option>
+            <option value="3" {{ "selected" if hotel_stars == 3 }}>3</option>
+            <option value="4" {{ "selected" if hotel_stars == 4 }}>4</option>
+            <option value="5" {{ "selected" if hotel_stars == 5 }}>5</option>
         </select>
         <br>
         <br>
-        Number of rooms in hotel: <input name="num_rooms_in_hotel" type="number">
+        Number of rooms in hotel: <input name="num_rooms_in_hotel" type="number"
+                                         value="{{ num_rooms_in_hotel if num_rooms_in_hotel else "" }}">
         <br>
         <br>
-        Price of room: <input name="price_of_room" type="number">
+        Price of room: <input name="price_of_room" type="number" value="{{ price_of_room if price_of_room else "" }}">
         <br>
         <br>
         <button type="submit">Search</button>
@@ -46,8 +48,29 @@
 
 list of rooms
 <br>
-{% for room in rooms %}
-    room<br>
-{% endfor %}
+
+<table>
+    <tr>
+        <th>Room Num</th>
+        <th>Hotel Name</th>
+        <th>Price</th>
+        <th>Capacity</th>
+        <th>View</th>
+        <th>Amenities</th>
+        <th>Problems</th>
+        <th>Extendable</th>
+    </tr>
+    {% for room in rooms %}
+        <tr>
+            <td>{{ room.room_num }}</td>
+            <td>{{ room.get_hotel().hotel_name }}</td>
+            <td>{{ room.price }}</td>
+            <td>{{ room.capacity }}</td>
+            <td>{{ room.view }}</td>
+            <td>{{ room.amenities }}</td>
+            <td>{{ room.extendable }}</td>
+        </tr>
+    {% endfor %}
+</table>
 </body>
 </html>

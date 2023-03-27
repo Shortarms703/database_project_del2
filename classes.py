@@ -23,6 +23,7 @@ class ExecutesSQL:
     def __repr__(self):
         return str(self.__dict__)
 
+
 class Book:
 
     def __int__(self, book_id, room_num, customer_id, start_date, end_date):
@@ -32,9 +33,11 @@ class Book:
         self.start_date = start_date
         self.end_date = end_date
 
+
 class Chain:
 
-    def __init__(self, name = None, street = None, city = None, postal_code = None, country = None, email = None, phone_number = None):
+    def __init__(self, name=None, street=None, city=None, postal_code=None, country=None, email=None,
+                 phone_number=None):
         self.name = name
         self.street = street
         self.city = city
@@ -43,9 +46,11 @@ class Chain:
         self.email = email
         self.phone_number = phone_number
 
+
 class Customer:
 
-    def __init__(self, customer_id, SIN, hotel_id, first_name, last_name, registration_date, street = None, city = None, postal_code = None, country = None, password = None):
+    def __init__(self, customer_id, SIN, hotel_id, first_name, last_name, registration_date, street=None, city=None,
+                 postal_code=None, country=None, password=None):
         self.customer_id = customer_id
         self.hotel_id = hotel_id
         self.SIN = SIN
@@ -57,6 +62,7 @@ class Customer:
         self.country = country
         self.registration_date = registration_date
         self.password = password
+
 
 class Employee:
 
@@ -73,6 +79,7 @@ class Employee:
         self.postal_code = postal_code
         self.country = country
         self.position = position
+
 
 class Hotel(ExecutesSQL):
 
@@ -108,6 +115,11 @@ class Hotel(ExecutesSQL):
                      row["problems"], row["extendable"]))
         return rooms
 
+    def get_num_rooms(self):
+        num_rooms = len(self.get_rooms())
+        return num_rooms
+
+
 class Rent:
 
     def __int__(self, rent_id, room_num, customer_id, start_date, end_date):
@@ -116,6 +128,7 @@ class Rent:
         self.customer_id = customer_id
         self.start_date = start_date
         self.end_date = end_date
+
 
 class Room(ExecutesSQL):
 

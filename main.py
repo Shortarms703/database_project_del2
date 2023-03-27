@@ -6,12 +6,12 @@ from flask import Flask, request, render_template, session, redirect, url_for
 
 from classes import Book, Chain, Customer, Employee, Hotel, Rent, Room
 
-
 app = Flask(__name__)
 app.secret_key = 'f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae0a'
 
 
 def setup():
+    # TODO actually call this sometime
     db.init_db()
 
 
@@ -53,7 +53,6 @@ def cust_or_emp():
             if session["cust_or_emp"] == "customer":
                 return redirect(url_for("create_customer"))
 
-
     return render_template("cust_or_emplo.html")
 
 
@@ -79,7 +78,6 @@ def create_customer():
     return render_template('create_customer.html')
 
 
-
 @app.route('/create_employee')
 def create_employee():
     if request.method == "POST":
@@ -97,25 +95,67 @@ def create_employee():
         current_emploee = Employee(None, sin, first_name, last_name, hotel_name, password, None, street, city, postal_code, country, position)
 
     return render_template('create_employee.html')
+
+
 # CUSTOMER STUFF
 
-@app.route('/room_search')
+@app.route('/room_search', methods=["GET", "POST"])
 def room_search():
+    # checks that you are logged in as a customer
+    list_of_rooms = db.get_all_rooms()  # should be just all the rooms
     if request.method == "POST":
-        start_date = request.form["start_date"]
-        end_date = request.form["end_date"]
-        room_capacity = request.form["room_capacity"]
-        area = request.form["area"]
-        hotel_chain = request.form["hotel_chain"]
-        hotel_stars = request.form["hotel_stars"]
-        num_rooms_in_hotel = request.form["num_rooms_in_hotel"]
-        price_of_room = request.form["price_of_room"]
+        print(request.form.to_dict())
+        if request.form["start_date"] == "":
+            start_date = None
+        else:
+            start_date = request.form["start_date"]
+
+        if request.form["end_date"] == "":
+            end_date = None
+        else:
+            end_date = request.form["end_date"]
+
+        if request.form["room_capacity"] == "":
+            room_capacity = None
+        else:
+            room_capacity = int(request.form["room_capacity"])
+
+        if request.form["area"] == "":
+            area = None
+        else:
+            area = request.form["area"]
+
+        if request.form["hotel_chain"] == "":
+            hotel_chain = None
+        else:
+            hotel_chain = request.form["hotel_chain"]
+
+        if request.form["hotel_stars"] == "none":
+            hotel_stars = None
+        else:
+            hotel_stars = int(request.form["hotel_stars"])
+
+        if request.form["num_rooms_in_hotel"] == "":
+            num_rooms_in_hotel = None
+        else:
+            num_rooms_in_hotel = int(request.form["num_rooms_in_hotel"])
+
+        if request.form["price_of_room"] == "":
+            price_of_room = None
+        else:
+            price_of_room = int(request.form["price_of_room"])
 
         list_of_rooms = db.db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel_stars,
                                           num_rooms_in_hotel, price_of_room)
-
-    # checks that you are logged in as a customer
-    list_of_rooms = []  # list of rooms depending on what is being searched for
+        return render_template('room_list.html', rooms=list_of_rooms,
+                               start_date=start_date,
+                               end_date=end_date,
+                               room_capacity=room_capacity,
+                               area=area,
+                               hotel_chain=hotel_chain,
+                               hotel_stars=hotel_stars,
+                               num_rooms_in_hotel=num_rooms_in_hotel,
+                               price_of_room=price_of_room)
     return render_template('room_list.html', rooms=list_of_rooms)
 
 
