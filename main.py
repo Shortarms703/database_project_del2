@@ -61,7 +61,7 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/create_customer')
+@app.route('/create_customer', methods = ["GET", "POST"])
 def create_customer():
     if request.method == "POST":
         first_name = request.form["first_name"]
@@ -72,13 +72,15 @@ def create_customer():
         city = request.form["city"]
         postal_code = request.form["postal_code"]
         country = request.form["country"]
-        #make sure to change this with the db function
-        hotel_name = "for now"
-        current_customer = Customer(None, sin, hotel_name, first_name, last_name, datetime.today().strftime('%Y-%m-%d'), street, city, postal_code, country, password)
-    return render_template('create_customer.html')
+        hotel_id = request.form["chain_name_hotel_name"]
+        current_customer = Customer(None, sin, hotel_id, first_name, last_name, datetime.today().strftime('%Y-%m-%d'),
+                                    street, city, postal_code, country, password)
+        current_customer.create_cust()
+    hotels = db.get_hotel_from_create()
+    return render_template('create_customer.html', hotels = hotels)
 
 
-@app.route('/create_employee')
+@app.route('/create_employee', methods = ["GET", "POST"])
 def create_employee():
     if request.method == "POST":
         position = request.form["position"]
@@ -90,11 +92,12 @@ def create_employee():
         city = request.form["city"]
         postal_code = request.form["postal_code"]
         country = request.form["country"]
-        # make sure to change this with the db function
-        hotel_name = "for now"
-        current_emploee = Employee(None, sin, first_name, last_name, hotel_name, password, None, street, city, postal_code, country, position)
-
-    return render_template('create_employee.html')
+        hotel_id = request.form["chain_name_hotel_name"]
+        current_emploee = Employee(sin, first_name, last_name, hotel_id, password, None, street, city, postal_code,
+                                   country, position)
+        current_emploee.create_emp()
+    hotels = db.get_hotel_from_create()
+    return render_template('create_employee.html', hotels = hotels)
 
 
 # CUSTOMER STUFF

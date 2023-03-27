@@ -74,15 +74,34 @@ def get_all_rooms():
     return rooms
 
 
+def get_hotel_from_create():
+    sql = f"SELECT chain_name, hotel_name, hotel_id FROM Hotel, Chain WHERE Hotel.chain_name = Chain.name"
+    chain_hotels = execute(sql)
+    chain_hotel_list = []
+    for chain_hotel in chain_hotels:
+        chain_hotel_list.append([chain_hotel[0], chain_hotel[1], chain_hotel[2]])
+    return chain_hotel_list
+    print(chain_hotel_list)
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     rooms = db_room_search(start_date="", end_date="", room_capacity=2, area="", hotel_chain="test", hotel_stars=3,
                            num_rooms_in_hotel="", price_of_room="")
+
+    get_hotel()
     # print("searched rooms", rooms)
-    for x in rooms:
-        print(x)
-        hotel = x.get_hotel()
-        print(hotel)
-        print(hotel.get_rooms())
+    # for x in rooms:
+    #     print(x)
+    #     hotel = x.get_hotel()
+    #     print(hotel)
+    #     print(hotel.get_rooms())
     pass
     # execute_file(config.schema_file)
     # chains = [row in execute("SELECT name, street, city, postal_code, country FROM Chain")]

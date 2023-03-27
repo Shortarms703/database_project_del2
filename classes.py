@@ -3,6 +3,7 @@ import config
 import sqlite3 as sl
 
 
+
 class ExecutesSQL:
     def execute(self, sql, params=None, one=False):
         # conn = sl.connect(config.database)
@@ -47,7 +48,7 @@ class Chain:
         self.phone_number = phone_number
 
 
-class Customer:
+class Customer(ExecutesSQL):
 
     def __init__(self, customer_id, SIN, hotel_id, first_name, last_name, registration_date, street=None, city=None,
                  postal_code=None, country=None, password=None):
@@ -62,9 +63,13 @@ class Customer:
         self.country = country
         self.registration_date = registration_date
         self.password = password
+    def create_cust(self):
+        sql = f" insert into Customer values (NULL, '{self.hotel_id}', '{self.SIN}', '{self.first_name}', '{self.last_name}', " \
+              f"'{self.street}', '{self.city}', '{self.postal_code}', '{self.country}', '{self.registration_date}', " \
+              f"'{self.password}')"
+        self.execute(sql)
 
-
-class Employee:
+class Employee(ExecutesSQL):
 
     def __init__(self, SIN, first_name, last_name, hotel_id, password=None, employee_id=None, street=None, city=None,
                  postal_code=None, country=None, position=None):
@@ -80,7 +85,9 @@ class Employee:
         self.country = country
         self.position = position
 
-
+    def create_emp(self):
+        sql = f" insert into Employee values (NULL, '{self.password}', '{self.hotel_id}', '{self.SIN}', '{self.first_name}', '{self.last_name}', '{self.street}', '{self.city}', '{self.postal_code}', '{self.country}', '{self.position}')"
+        self.execute(sql)
 class Hotel(ExecutesSQL):
 
     def __init__(self, hotel_id, chain_name, hotel_name, star_num=None, street=None, city=None, postal_code=None,
