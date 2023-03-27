@@ -56,8 +56,31 @@ def cust_or_emp():
     return render_template("cust_or_emplo.html")
 
 
-@app.route('/login')
+@app.route('/login', methods = ["GET", "POST"])
 def login():
+    if request.method == "POST":
+        name = request.form["name"]
+        password = request.form["password"]
+        if session["cust_or_emp"] == "employee":
+            value = db.check_if_login_vaid_emp(name, password)
+            if value == False:
+                #remember to put mesasge they fuck up telling them they fucked up
+                return render_template('login.html')
+            else:
+                session["current_emp_id"] = value
+                return redirect(url_for("rent_room"))
+
+        if session["cust_or_emp"] == "customer":
+            value = db.check_if_login_vaid_cust(name, password)
+            if value == False:
+                # remember to put mesasge they fuck up telling them they fucked up
+                return render_template('login.html')
+            else:
+                session["current_cust_id"] = value
+                return redirect(url_for("room_search"))
+
+
+
     return render_template('login.html')
 
 

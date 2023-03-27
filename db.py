@@ -83,6 +83,27 @@ def get_hotel_from_create():
     return chain_hotel_list
     print(chain_hotel_list)
 
+def check_if_login_vaid_emp(name, passwrod):
+    sql = f"select * from Employee where first_name = '{name}'and password = '{passwrod}'"
+    row = execute(sql)
+    if len(row) == 0:
+        return False
+    else:
+        return row[0]["employee_ID"]
+
+
+
+
+def check_if_login_vaid_cust(name, password):
+    sql = f"select * from Customer where first_name = '{name}'and password = '{password}'"
+    row = execute(sql)
+    if len(row) == 0:
+        return False
+    else:
+
+        return row[0]["customer_id"]
+
+
 
 
 
@@ -95,7 +116,7 @@ if __name__ == '__main__':
     rooms = db_room_search(start_date="", end_date="", room_capacity=2, area="", hotel_chain="test", hotel_stars=3,
                            num_rooms_in_hotel="", price_of_room="")
 
-    get_hotel()
+   # get_hotel()
     # print("searched rooms", rooms)
     # for x in rooms:
     #     print(x)
