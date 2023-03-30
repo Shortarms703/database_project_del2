@@ -44,7 +44,7 @@ def db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel
     # sql = f"SELECT Room.* FROM Room, Hotel WHERE capacity='{room_capacity}' AND Room.hotel_id = Hotel.hotel_id AND Hotel.chain_name = '{hotel_chain}' AND Hotel.star_num = '{hotel_stars}'"
     rooms = get_all_rooms()
     search_result = []
-    
+
     for room in rooms:
         searched_for = True
         # TODO: check dates and area (same city and country?)
@@ -81,20 +81,26 @@ def get_hotel_from_create():
     for chain_hotel in chain_hotels:
         chain_hotel_list.append([chain_hotel[0], chain_hotel[1], chain_hotel[2]])
     return chain_hotel_list
-    print(chain_hotel_list)
 
-def check_if_login_vaid_emp(name, passwrod):
-    sql = f"select * from Employee where first_name = '{name}'and password = '{passwrod}'"
+def get_room_from_num(room_num):
+    sql = f"SELECT * FROM Room WHERE room_num = '{room_num}'"
+    rows = execute(sql)
+    if rows:
+        row = rows[0]
+        room = Room(row["room_num"], row["hotel_id"], row["price"], row["capacity"], row["view"], row["amenities"], row["problems"], row["extendable"])
+        return room
+    else:
+        return False
+
+def check_if_login_valid_emp(name, password):
+    sql = f"select * from Employee where first_name = '{name}'and password = '{password}'"
     row = execute(sql)
     if len(row) == 0:
         return False
     else:
         return row[0]["employee_ID"]
 
-
-
-
-def check_if_login_vaid_cust(name, password):
+def check_if_login_valid_cust(name, password):
     sql = f"select * from Customer where first_name = '{name}'and password = '{password}'"
     row = execute(sql)
     if len(row) == 0:
@@ -103,20 +109,11 @@ def check_if_login_vaid_cust(name, password):
 
         return row[0]["customer_id"]
 
-
-
-
-
-
-
-
-
-
 if __name__ == '__main__':
     rooms = db_room_search(start_date="", end_date="", room_capacity=2, area="", hotel_chain="test", hotel_stars=3,
                            num_rooms_in_hotel="", price_of_room="")
-
-   # get_hotel()
+    print(get_room_from_num(2))
+    # get_hotel()
     # print("searched rooms", rooms)
     # for x in rooms:
     #     print(x)

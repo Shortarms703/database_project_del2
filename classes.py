@@ -3,7 +3,6 @@ import config
 import sqlite3 as sl
 
 
-
 class ExecutesSQL:
     def execute(self, sql, params=None, one=False):
         # conn = sl.connect(config.database)
@@ -25,7 +24,7 @@ class ExecutesSQL:
         return str(self.__dict__)
 
 
-class Book:
+class Book(ExecutesSQL):
 
     def __int__(self, book_id, room_num, customer_id, start_date, end_date):
         self.book_id = book_id
@@ -35,7 +34,7 @@ class Book:
         self.end_date = end_date
 
 
-class Chain:
+class Chain(ExecutesSQL):
 
     def __init__(self, name=None, street=None, city=None, postal_code=None, country=None, email=None,
                  phone_number=None):
@@ -127,7 +126,7 @@ class Hotel(ExecutesSQL):
         return num_rooms
 
 
-class Rent:
+class Rent(ExecutesSQL):
 
     def __int__(self, rent_id, room_num, customer_id, start_date, end_date):
         self.book_id = rent_id
@@ -159,6 +158,3 @@ class Room(ExecutesSQL):
                       row["city"], row["postal_code"], row["country"], row["email"], row["phone_number"])
         return hotel
 
-
-if __name__ == '__main__':
-    pass

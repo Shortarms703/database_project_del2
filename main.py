@@ -62,7 +62,7 @@ def login():
         name = request.form["name"]
         password = request.form["password"]
         if session["cust_or_emp"] == "employee":
-            value = db.check_if_login_vaid_emp(name, password)
+            value = db.check_if_login_valid_emp(name, password)
             if value == False:
                 #remember to put mesasge they fuck up telling them they fucked up
                 return render_template('login.html')
@@ -71,7 +71,7 @@ def login():
                 return redirect(url_for("rent_room"))
 
         if session["cust_or_emp"] == "customer":
-            value = db.check_if_login_vaid_cust(name, password)
+            value = db.check_if_login_valid_cust(name, password)
             if value == False:
                 # remember to put mesasge they fuck up telling them they fucked up
                 return render_template('login.html')
@@ -185,10 +185,13 @@ def room_search():
     return render_template('room_list.html', rooms=list_of_rooms)
 
 
-@app.route('/book_room')
-def book_room():
-    # linked to from room_search
-    return render_template('book_room.html')
+@app.route('/book_room/<room_num>', methods=["GET", "POST"])
+def book_room(room_num):
+    room = db.get_room_from_num(room_num)
+    if request.method == "POST":
+        pass
+
+    return render_template('book_room.html', room=room)
 
 
 @app.route('/customer_view_rooms')
@@ -205,7 +208,7 @@ def customer_account():
 
 # EMPLOYEE STUFF
 
-@app.route('/rent_room')
+@app.route('/rent_room', methods="")
 def rent_room():
     list_of_rooms = []
     return render_template('room_list.html', rooms=list_of_rooms)

@@ -59,6 +59,7 @@ list of rooms
         <th>Amenities</th>
         <th>Problems</th>
         <th>Extendable</th>
+        <th>Book Room</th>
     </tr>
     {% for room in rooms %}
         <tr>
@@ -69,6 +70,9 @@ list of rooms
             <td>{{ room.view }}</td>
             <td>{{ room.amenities }}</td>
             <td>{{ room.extendable }}</td>
+            <td>
+                <a href="{{ url_for("book_rom", room_num=room.room_num) }}"></a>
+            </td>
         </tr>
     {% endfor %}
 </table>
