@@ -1,6 +1,7 @@
 import config
 
 import sqlite3 as sl
+import random as random
 
 from classes import *
 
@@ -37,6 +38,32 @@ def init_db():
     # execute_file(config.sql_index_file)
     # execute_file(config.sql_views_file)
 
+
+def init_hotels():
+    chains = execute(
+        "SELECT name, street, city, postal_code, country FROM Chain")
+    for chain in chains:
+        for i in range(1, 9):
+            chain_name = chain[0]
+            hotel_name = f"Hotel {i}"
+            star_num = i % 5 + 1
+
+            street_number = str(random.randint(1, 9999))
+            street_name = random.choice(
+                ["Main", "Oak", "Maple", "Elm", "Cedar", "Pine", "Spruce", "Birch"])
+            street_type = random.choice(
+                ["St", "Ave", "Blvd", "Rd", "Ln", "Dr"])
+            street = f"{street_number} {street_name} {street_type}"
+
+            city = chain[2]
+            postal_code = str(int(chain[3]) + i)
+            country = chain[4]
+            email = f"hotel{i}@{chain_name}.com"
+            phone_number = f"{555 + (i // 3):03d}-{(i % 3) * 3 + 100:03d}"
+            execute("INSERT INTO Hotel (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number))
+
+
 def db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel_stars, num_rooms_in_hotel, price_of_room):
     no_selection = None  # to compare against parameters to know when there is no selection, might change to None in the future or be specific per parameter idk yet
 
@@ -63,6 +90,7 @@ def db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel
             search_result.append(room)
     return search_result
 
+
 def get_all_rooms():
     sql = f"SELECT * FROM Room"
     rows = execute(sql)
@@ -79,18 +107,22 @@ def get_hotel_from_create():
     chain_hotels = execute(sql)
     chain_hotel_list = []
     for chain_hotel in chain_hotels:
-        chain_hotel_list.append([chain_hotel[0], chain_hotel[1], chain_hotel[2]])
+        chain_hotel_list.append(
+            [chain_hotel[0], chain_hotel[1], chain_hotel[2]])
     return chain_hotel_list
+
 
 def get_room_from_num(room_num):
     sql = f"SELECT * FROM Room WHERE room_num = '{room_num}'"
     rows = execute(sql)
     if rows:
         row = rows[0]
-        room = Room(row["room_num"], row["hotel_id"], row["price"], row["capacity"], row["view"], row["amenities"], row["problems"], row["extendable"])
+        room = Room(row["room_num"], row["hotel_id"], row["price"], row["capacity"],
+                    row["view"], row["amenities"], row["problems"], row["extendable"])
         return room
     else:
         return False
+
 
 def check_if_login_valid_emp(name, password):
     sql = f"select * from Employee where first_name = '{name}'and password = '{password}'"
@@ -100,6 +132,7 @@ def check_if_login_valid_emp(name, password):
     else:
         return row[0]["employee_ID"]
 
+
 def check_if_login_valid_cust(name, password):
     sql = f"select * from Customer where first_name = '{name}'and password = '{password}'"
     row = execute(sql)
@@ -108,6 +141,7 @@ def check_if_login_valid_cust(name, password):
     else:
 
         return row[0]["customer_id"]
+
 
 if __name__ == '__main__':
     rooms = db_room_search(start_date="", end_date="", room_capacity=2, area="", hotel_chain="test", hotel_stars=3,
@@ -120,23 +154,8 @@ if __name__ == '__main__':
     #     hotel = x.get_hotel()
     #     print(hotel)
     #     print(hotel.get_rooms())
-    pass
-    # execute_file(config.schema_file)
-    # chains = [row in execute("SELECT name, street, city, postal_code, country FROM Chain")]
-    # for chain in chains:
-    #     for i in range(1,9):
-    #         hotel_name = f"Hotel {i}"
-    #         star_num = i % 5 + 1
-    #
-    #         street_number = str(random.randint(1, 9999))
-    #         street_name = random.choice(["Main", "Oak", "Maple", "Elm", "Cedar", "Pine", "Spruce", "Birch"])
-    #         street_type = random.choice(["St", "Ave", "Blvd", "Rd", "Ln", "Dr"])
-    #         street = f"{street_number} {street_name} {street_type}"
-    #
-    #         city = chain[2]
-    #         postal_code = str(int(chain[3]) + i)
-    #         country = chain[4]
-    #         email = f"hotel{i}@{chain_name}.com"
-    #         phone_number = f"{555 + (i // 3):03d}-{(i % 3) * 3 + 100:03d}"
-    #         execute("INSERT INTO Hotel (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number))
+    # pass
 
+    # execute_file(config.schema_file)
+    # execute_file(config.sample_data_file)
+    # init_hotels()
