@@ -35,11 +35,11 @@
         </select>
         <br>
         <br>
-        Number of rooms in hotel: <input name="num_rooms_in_hotel" type="number"
+        Number of rooms in hotel: <input name="num_rooms_in_hotel" type="number" min="0"
                                          value="{{ num_rooms_in_hotel if num_rooms_in_hotel else "" }}">
         <br>
         <br>
-        Price of room: <input name="price_of_room" type="number" value="{{ price_of_room if price_of_room else "" }}">
+        Price of room: <input name="price_of_room" type="number" min="0" value="{{ price_of_room if price_of_room else "" }}">
         <br>
         <br>
         <button type="submit">Search</button>
