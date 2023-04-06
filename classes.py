@@ -84,6 +84,11 @@ class Employee(ExecutesSQL):
     def create_emp(self):
         sql = f" insert into Employee values (NULL, '{self.password}', '{self.hotel_id}', '{self.SIN}', '{self.first_name}', '{self.last_name}', '{self.street}', '{self.city}', '{self.postal_code}', '{self.country}', '{self.position}')"
         self.execute(sql)
+
+    def update(self):
+        sql = f"UPDATE Employee SET password = '{self.password}', hotel_id = '{self.hotel_id}', SIN = '{self.SIN}', first_name = '{self.first_name}', last_name = '{self.last_name}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', position = '{self.position}' WHERE employee_id='{self.employee_id}'"
+        self.execute(sql)
+
 class Hotel(ExecutesSQL):
 
     def __init__(self, hotel_id, chain_name, hotel_name, star_num=None, street=None, city=None, postal_code=None,

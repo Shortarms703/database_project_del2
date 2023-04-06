@@ -2,11 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Account Details</title>
 </head>
 <body>
-employee account details<br>
-name<br>
-stuff<br>
+{% include "employee_header.html" %}
+<form method="POST">
+    Hotel_id: <input name="hotel_id" type="text" value="{{ employee["hotel_id"] }}">
+    <br><br>
+    <!-- should prob control how position is edited -->
+    First_name: <input name="first_name" type="text" value="{{ employee["first_name"] }}">
+    <br><br>
+    Last_name: <input name="last_name" type="text" value="{{ employee["last_name"] }}">
+    <br><br>
+    Password: <input name="password" type="password" value="{{ employee["password"] }}">
+    <br><br>
+    SIN: <input name="SIN" type="text" value="{{ employee["SIN"] }}" readonly>
+    <br><br>
+    Street: <input name="street" type="text" value="{{ employee["street"] }}">
+    <br><br>
+    City: <input name="city" type="text" value="{{ employee["city"] }}">
+    <br><br>
+    Postal_code: <input name="postal_code" type="text" value="{{ employee["postal_code"] }}">
+    <br><br>
+    Country: <input name="country" type="text" value="{{ employee["country"] }}">
+    <br><br>
+    Position: <input name="position" type="text" value="{{ employee["position"] }}"> 
+    <br><br>
+    <button type="submit">Update</button>
+</form>
+<br>
+<a href="{{ url_for("delete_account") }}" style="color: red">Delete Account</a>
 </body>
 </html>

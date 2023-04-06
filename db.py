@@ -155,6 +155,16 @@ def get_customer(customer_id):
     else:
         return False
 
+def get_employee(employee_ID):
+    sql = f"SELECT * FROM Employee WHERE employee_id='{employee_ID}'"
+    rows = execute(sql)
+    if rows:
+        row = rows[0]
+        employee = Employee(row["SIN"], row["first_name"], row["last_name"], row["hotel_id"], row["password"], row["employee_id"], row["street"], row["city"], row["postal_code"], row["country"],  row["position"], )
+        return employee
+    else:
+        return False
+
 def delete_customer(customer_id):
     sql = f"DELETE FROM Customer WHERE customer_id='{customer_id}'"
     execute(sql)

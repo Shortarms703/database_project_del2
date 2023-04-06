@@ -299,9 +299,25 @@ def rent_room():
     return render_template('room_list.html', rooms=list_of_rooms)
 
 
-@app.route('/employee_account')
+@app.route('/employee_account', methods=["GET", "POST"])
 def employee_account():
-    return render_template('employee_details.html')
+    employee_id = session["current_emp_id"]
+    employee = db.get_employee(employee_id)
+    if request.method == "POST":
+        employee.password = request.form["password"]
+        employee.hotel_id = request.form["hotel_id"]
+        employee.SIN = request.form["SIN"]
+        employee.first_name = request.form["first_name"]
+        employee.last_name = request.form["last_name"]
+        employee.street = request.form["street"]
+        employee.city = request.form["city"]
+        employee.postal_code = request.form["postal_code"]
+        employee.country = request.form["country"]
+        employee.position = request.form["position"]
+        employee.update()
+        return redirect(url_for("employee_account"))
+
+    return render_template('employee_details.html', employee=employee)
 
 
 # MANAGER STUFF

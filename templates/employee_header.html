@@ -32,11 +32,10 @@
 <body>
 <header>
     <nav>
-        <a href="{{ url_for("room_search") }}">Book a Room</a>
-        <a href="{{ url_for("customer_view_rooms") }}">View Booked Rooms</a>
-        <a href="{{ url_for("customer_account") }}">Account Details</a>
-        <a href="{{ url_for("employee_account") }}">Employee Details</a>
-        <!-- completely for testing since no good way to access it currently exists -->
+        <a href="{{ url_for("room_search") }}">Rent Rooms</a>
+        <!-- <a href="{{ url_for("customer_view_rooms") }}">View Booked Rooms</a> -->
+        <!-- employees should see records differently probably -->
+        <a href="{{ url_for("employee_account") }}">Account Details</a>
         <a href="{{ url_for("logout") }}">Logout</a>
     </nav>
 </header>
