@@ -63,6 +63,24 @@ def init_hotels():
                 "INSERT INTO Hotel (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number))
 
+def init_rooms():
+    hotels = execute("SELECT hotel_id FROM Hotel")
+    unique_room_nums = random.sample(range(100, 999), 200)
+    for hotel in hotels:
+        for i in range(1, 6):
+            room_num = unique_room_nums.pop(0) # basically take hotel ID digit 1 and add to a random number
+            price = float(random.randint(150, 700))
+            capacity = i # wrote this explicitly just for clarity
+            view = random.choice(["City", "Interior", "Water", "Park"])
+            amenities = ', '.join(random.choices(["Wifi", "Breakfast", "Pool", "Free Laundry"], weights=[10, 6, 4, 1], k=2))
+            problems = ', '.join(random.choices(["None", "Leak", "Electrical", "Furniture Damage", "Window"], weights=[90, 3, 3, 2, 2], k=1))
+            extendable = random.choices([True, False], weights=[20, 80], k=1)
+
+            execute(
+                "INSERT INTO Room (room_num, hotel_id, price, capacity, view, amenities, problems, extendable) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
+                (room_num, hotel[0], price, capacity, view, amenities, problems, extendable[0]))
+
+
 
 def db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel_stars, num_rooms_in_hotel,
                    price_of_room):
@@ -194,3 +212,4 @@ if __name__ == '__main__':
     # execute_file(config.schema_file)
     # execute_file(config.sample_data_file)
     # init_hotels()
+    # init_rooms()
