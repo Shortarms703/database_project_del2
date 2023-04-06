@@ -192,6 +192,17 @@ def delete_employee(employee_id):
     execute(sql)
 
 if __name__ == '__main__':
+    # checking the view worked
+    # result = (execute("SELECT * FROM hotel_count_by_area"))
+    # for row in result:
+    #     print(row[0], row[1])
+
+    #checking capacity view
+    # execute_file(config.sql_views_file)
+    # rows = execute("SELECT * FROM room_capacity_by_hotel")
+    # for row in rows:
+    #     print(row[0], row[1], row[2])
+
     # print(get_unavailable_days_for_room(1))
     room = get_room_from_num(1)
     a = room.check_room_available("2023-04-23", "2023-04-24")
