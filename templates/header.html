@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        /* Style the header bar */
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            height: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Style the links */
+        header a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        {#font-size: 18px;#}
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <a href="{{ url_for("room_search") }}">Book a Room</a>
+        <a href="{{ url_for("customer_view_rooms") }}">View Booked Rooms</a>
+        <a href="{{ url_for("customer_account") }}">Account Details</a>
+        <a href="{{ url_for("logout") }}">Logout</a>
+    </nav>
+</header>
+</body>
+</html>

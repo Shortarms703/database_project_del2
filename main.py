@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 import db
 
@@ -56,7 +56,14 @@ def cust_or_emp():
     return render_template("cust_or_emplo.html")
 
 
-@app.route('/login', methods = ["GET", "POST"])
+@app.route('/logout')
+def logout():
+    session["cust_or_emp"] = ""
+    session["current_cust_id"] = ""
+    session["current_emp_id"] = ""
+    return redirect(url_for("welcome"))
+
+@app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         name = request.form["name"]
@@ -64,7 +71,7 @@ def login():
         if session["cust_or_emp"] == "employee":
             value = db.check_if_login_valid_emp(name, password)
             if value == False:
-                #remember to put mesasge they fuck up telling them they fucked up
+                # remember to put message they fuck up telling them they fucked up
                 return render_template('login.html')
             else:
                 session["current_emp_id"] = value
@@ -73,19 +80,18 @@ def login():
         if session["cust_or_emp"] == "customer":
             value = db.check_if_login_valid_cust(name, password)
             if value == False:
-                # remember to put mesasge they fuck up telling them they fucked up
+                # remember to put message they fuck up telling them they fucked up
                 return render_template('login.html')
             else:
                 session["current_cust_id"] = value
                 return redirect(url_for("room_search"))
 
-
-
     return render_template('login.html')
 
 
-@app.route('/create_customer', methods = ["GET", "POST"])
+@app.route('/create_customer', methods=["GET", "POST"])
 def create_customer():
+    create_cust_failed = False
     if request.method == "POST":
         first_name = request.form["first_name"]
         last_name = request.form["last_name"]
@@ -99,12 +105,20 @@ def create_customer():
         current_customer = Customer(None, sin, hotel_id, first_name, last_name, datetime.today().strftime('%Y-%m-%d'),
                                     street, city, postal_code, country, password)
         current_customer.create_cust()
+
+        # checks to see if it is possible to login as the new customer
+        if db.check_if_login_valid_cust(first_name, password):
+            return redirect(url_for("login"))
+        else:
+            create_cust_failed = True
+
     hotels = db.get_hotel_from_create()
-    return render_template('create_customer.html', hotels = hotels)
+    return render_template('create_customer.html', hotels=hotels, create_cust_failed=create_cust_failed)
 
 
-@app.route('/create_employee', methods = ["GET", "POST"])
+@app.route('/create_employee', methods=["GET", "POST"])
 def create_employee():
+    create_emp_failed = False
     if request.method == "POST":
         position = request.form["position"]
         first_name = request.form["first_name"]
@@ -116,11 +130,18 @@ def create_employee():
         postal_code = request.form["postal_code"]
         country = request.form["country"]
         hotel_id = request.form["chain_name_hotel_name"]
-        current_emploee = Employee(sin, first_name, last_name, hotel_id, password, None, street, city, postal_code,
-                                   country, position)
-        current_emploee.create_emp()
+        current_employee = Employee(sin, first_name, last_name, hotel_id, password, None, street, city, postal_code,
+                                    country, position)
+        current_employee.create_emp()
+
+        # checks to see if it is possible to login as the new employee
+        if db.check_if_login_valid_emp(first_name, password):
+            return redirect(url_for("login"))
+        else:
+            create_emp_failed = True
+
     hotels = db.get_hotel_from_create()
-    return render_template('create_employee.html', hotels = hotels)
+    return render_template('create_employee.html', hotels=hotels, create_emp_failed=create_emp_failed)
 
 
 # CUSTOMER STUFF
@@ -128,7 +149,7 @@ def create_employee():
 @app.route('/room_search', methods=["GET", "POST"])
 def room_search():
     # checks that you are logged in as a customer
-    list_of_rooms = db.get_all_rooms()  # should be just all the rooms
+    list_of_rooms = db.get_all_rooms()
     if request.method == "POST":
         print(request.form.to_dict())
         if request.form["start_date"] == "":
@@ -188,10 +209,45 @@ def room_search():
 @app.route('/book_room/<room_num>', methods=["GET", "POST"])
 def book_room(room_num):
     room = db.get_room_from_num(room_num)
+    availability_message = ""
+    message_color = ""
     if request.method == "POST":
-        pass
+        room_num = room.room_num
+        customer_id = session["current_cust_id"]
+        start_date = request.form["start_date"]
+        end_date = request.form["end_date"]
+        booking = Book(None, room_num, customer_id, start_date, end_date)
+        room = db.get_room_from_num(room_num)
 
-    return render_template('book_room.html', room=room)
+        # checks that booking does not start in the past
+        if booking.starts_in_past():
+            availability_message = "Cannot create booking that starts in the past"
+            message_color = "red"
+
+        # check that start is before end
+        elif booking.start_date_before_end():
+            availability_message = "End date cannot come before start date"
+            message_color = "red"
+
+        # checks that room is available
+        elif not room.check_room_available(start_date, end_date):
+            availability_message = "Room is unavailable for that time period"
+            message_color = "red"
+
+        else:
+            booking.create_booking()
+            availability_message = "Room successfully booked"
+            message_color = "green"
+
+    unavailable_days = room.get_unavailable_days_for_room()
+
+    today = datetime.datetime.today()
+    today_date = today.strftime('%Y-%m-%d')
+    tomorrow_date = (today + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+
+    return render_template('book_room.html', room=room, unavailable_days=unavailable_days,
+                           availability_message=availability_message, message_color=message_color,
+                           today_date=today_date, tomorrow_date=tomorrow_date)
 
 
 @app.route('/customer_view_rooms')
@@ -201,14 +257,43 @@ def customer_view_rooms():
     return render_template('room_list.html', rooms=list_of_rooms)
 
 
-@app.route('/customer_account')
+@app.route('/customer_account', methods=["GET", "POST"])
 def customer_account():
-    return render_template('customer_details.html')
+    customer_id = session["current_cust_id"]
+    customer = db.get_customer(customer_id)
+    if request.method == "POST":
+        customer.password = request.form["password"]
+        # customer.hotel_id = request.form["hotel_id"]
+        customer.SIN = request.form["SIN"]
+        customer.first_name = request.form["first_name"]
+        customer.last_name = request.form["last_name"]
+        customer.street = request.form["street"]
+        customer.city = request.form["city"]
+        customer.postal_code = request.form["postal_code"]
+        customer.country = request.form["country"]
+        # customer.registration_date = request.form["registration_date"]
+        customer.update()
+        return redirect(url_for("customer_account"))
+
+    return render_template('customer_details.html', customer=customer)
+
+
+@app.route('/delete_account')
+def delete_account():
+    if session["cust_or_emp"] == "employee":
+        employee_id = session["current_emp_id"]
+        db.delete_employee(employee_id)
+    if session["cust_or_emp"] == "customer":
+        customer_id = session["current_cust_id"]
+        db.delete_customer(customer_id)
+
+    return redirect(url_for("welcome"))
+
 
 
 # EMPLOYEE STUFF
 
-@app.route('/rent_room', methods="")
+@app.route('/rent_room', methods=["GET", "POST"])
 def rent_room():
     list_of_rooms = []
     return render_template('room_list.html', rooms=list_of_rooms)

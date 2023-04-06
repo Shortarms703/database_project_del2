@@ -1,3 +1,5 @@
+import datetime
+
 import config
 
 import sqlite3 as sl
@@ -24,16 +26,6 @@ class ExecutesSQL:
         return str(self.__dict__)
 
 
-class Book(ExecutesSQL):
-
-    def __init__(self, book_id, room_num, customer_id, start_date, end_date):
-        self.book_id = book_id
-        self.room_num = room_num
-        self.customer_id = customer_id
-        self.start_date = start_date
-        self.end_date = end_date
-
-
 class Chain(ExecutesSQL):
 
     def __init__(self, name=None, street=None, city=None, postal_code=None, country=None, email=None,
@@ -52,6 +44,7 @@ class Customer(ExecutesSQL):
     def __init__(self, customer_id, SIN, hotel_id, first_name, last_name, registration_date, street=None, city=None,
                  postal_code=None, country=None, password=None):
         self.customer_id = customer_id
+        self.password = password
         self.hotel_id = hotel_id
         self.SIN = SIN
         self.first_name = first_name
@@ -61,12 +54,16 @@ class Customer(ExecutesSQL):
         self.postal_code = postal_code
         self.country = country
         self.registration_date = registration_date
-        self.password = password
+
     def create_cust(self):
-        sql = f" insert into Customer values (NULL, '{self.hotel_id}', '{self.SIN}', '{self.first_name}', '{self.last_name}', " \
-              f"'{self.street}', '{self.city}', '{self.postal_code}', '{self.country}', '{self.registration_date}', " \
-              f"'{self.password}')"
+        sql = f" insert into Customer values (NULL, '{self.password}', '{self.hotel_id}', '{self.SIN}', '{self.first_name}', '{self.last_name}', " \
+              f"'{self.street}', '{self.city}', '{self.postal_code}', '{self.country}', '{self.registration_date}')"
         self.execute(sql)
+
+    def update(self):
+        sql = f"UPDATE Customer SET password = '{self.password}', hotel_id = '{self.hotel_id}', SIN = '{self.SIN}', first_name = '{self.first_name}', last_name = '{self.last_name}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', registration_date = '{self.registration_date}' WHERE customer_id='{self.customer_id}'"
+        self.execute(sql)
+
 
 class Employee(ExecutesSQL):
 
@@ -136,6 +133,36 @@ class Rent(ExecutesSQL):
         self.end_date = end_date
 
 
+class Book(ExecutesSQL):
+
+    def __init__(self, book_id, room_num, customer_id, start_date, end_date):
+        self.book_id = book_id
+        self.room_num = room_num
+        self.customer_id = customer_id
+        self.start_date = start_date
+        self.end_date = end_date
+
+    def create_booking(self):
+        sql = f"INSERT INTO Book VALUES (NULL, '{self.room_num}', '{self.customer_id}', '{self.start_date}', '{self.end_date}')"
+        self.execute(sql)
+
+    def starts_in_past(self):
+        today = datetime.datetime.today().date()
+        start = datetime.datetime.strptime(self.start_date, '%Y-%m-%d').date()
+        if start < today:
+            return True
+        else:
+            return False
+
+    def start_date_before_end(self):
+        start = datetime.datetime.strptime(self.start_date, '%Y-%m-%d').date()
+        end = datetime.datetime.strptime(self.end_date, '%Y-%m-%d').date()
+        if end < start:
+            return True
+        else:
+            return False
+
+
 class Room(ExecutesSQL):
 
     def __init__(self, room_num, hotel_id, price, capacity, view, amenities, problems, extendable):
@@ -157,4 +184,24 @@ class Room(ExecutesSQL):
         hotel = Hotel(row["hotel_id"], row["chain_name"], row["hotel_name"], row["star_num"], row["street"],
                       row["city"], row["postal_code"], row["country"], row["email"], row["phone_number"])
         return hotel
+
+    def get_unavailable_days_for_room(self):
+        sql = f"""SELECT start_date, end_date FROM Book WHERE room_num = '{self.room_num}' 
+                  UNION 
+                  SELECT start_date, end_date FROM Rent WHERE room_num = '{self.room_num}'"""
+        return [{"start_date": x["start_date"], "end_date": x["end_date"]} for x in self.execute(sql)]
+
+    def check_room_available(self, start_date, end_date):
+        unavailable_intervals = self.get_unavailable_days_for_room()
+        start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d').date()
+        end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
+        for interval in unavailable_intervals:
+            other_start, other_end = interval.values()
+            other_start = datetime.datetime.strptime(other_start, '%Y-%m-%d').date()
+            other_end = datetime.datetime.strptime(other_end, '%Y-%m-%d').date()
+            if start_date <= other_end and other_start <= end_date:
+                return False
+        return True
+
+
 

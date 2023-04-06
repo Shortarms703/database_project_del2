@@ -7,7 +7,6 @@ from classes import *
 
 
 def execute(sql, params=None, one=False):
-    # conn = sl.connect(config.database)
     with sl.connect(config.database) as conn:
         conn.row_factory = sl.Row
         if params:
@@ -60,11 +59,13 @@ def init_hotels():
             country = chain[4]
             email = f"hotel{i}@{chain_name}.com"
             phone_number = f"{555 + (i // 3):03d}-{(i % 3) * 3 + 100:03d}"
-            execute("INSERT INTO Hotel (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number))
+            execute(
+                "INSERT INTO Hotel (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number))
 
 
-def db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel_stars, num_rooms_in_hotel, price_of_room):
+def db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel_stars, num_rooms_in_hotel,
+                   price_of_room):
     no_selection = None  # to compare against parameters to know when there is no selection, might change to None in the future or be specific per parameter idk yet
 
     # don't want to use sql to get the specific rows since we need to sometimes ignore certain conditions when they do not have a selection
@@ -139,14 +140,38 @@ def check_if_login_valid_cust(name, password):
     if len(row) == 0:
         return False
     else:
-
         return row[0]["customer_id"]
 
 
+def get_customer(customer_id):
+    sql = f"SELECT * FROM Customer WHERE customer_id='{customer_id}'"
+    rows = execute(sql)
+    if rows:
+        row = rows[0]
+        customer = Customer(row["customer_id"], row["SIN"], row["hotel_id"], row["first_name"],
+                            row["last_name"], row["registration_date"], row["street"], row["city"], row["postal_code"],
+                            row["country"], row["password"])
+        return customer
+    else:
+        return False
+
+def delete_customer(customer_id):
+    sql = f"DELETE FROM Customer WHERE customer_id='{customer_id}'"
+    execute(sql)
+
+def delete_employee(employee_id):
+    sql = f"DELETE FROM Employee WHERE employee_id='{employee_id}'"
+    execute(sql)
+
 if __name__ == '__main__':
-    rooms = db_room_search(start_date="", end_date="", room_capacity=2, area="", hotel_chain="test", hotel_stars=3,
-                           num_rooms_in_hotel="", price_of_room="")
-    print(get_room_from_num(2))
+    # print(get_unavailable_days_for_room(1))
+    room = get_room_from_num(1)
+    a = room.check_room_available("2023-04-23", "2023-04-24")
+    print(a)
+    pass
+    # rooms = db_room_search(start_date="", end_date="", room_capacity=2, area="", hotel_chain="test", hotel_stars=3,
+    #                        num_rooms_in_hotel="", price_of_room="")
+    # print(get_room_from_num(2))
     # get_hotel()
     # print("searched rooms", rooms)
     # for x in rooms:
