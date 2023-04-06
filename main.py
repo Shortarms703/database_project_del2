@@ -102,7 +102,7 @@ def create_customer():
         postal_code = request.form["postal_code"]
         country = request.form["country"]
         hotel_id = request.form["chain_name_hotel_name"]
-        current_customer = Customer(None, sin, hotel_id, first_name, last_name, datetime.today().strftime('%Y-%m-%d'),
+        current_customer = Customer(None, sin, hotel_id, first_name, last_name, datetime.datetime.today().strftime('%Y-%m-%d'),
                                     street, city, postal_code, country, password)
         current_customer.create_cust()
 
