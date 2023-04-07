@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% include 'header.html' %}
+{##}
+{#<div>#}
+{#    <form method="POST">#}
+{#        Start date: <input name="start_date" type="date" value="{{ start_date if start_date else "" }}">#}
+{#        End date: <input name="end_date" type="date" value="{{ end_date if end_date else "" }}">#}
+{#        <br>#}
+{#        <br>#}
+{#        Room capacity: <input name="room_capacity" type="number" size="5"#}
+{#                              value="{{ room_capacity if room_capacity else "" }}">#}
+{#        <br>#}
+{#        <br>#}
+{#        Area: <select name="area">#}
+{#        <option value=""></option>#}
+{#        {% for a in areas %}#}
+{#            <option value="{{ a }}" {{ "selected" if a == area }}>{{ a }}</option>#}
+{#        {% endfor %}#}
+{#    </select>#}
+{#        <br>#}
+{#        <br>#}
+{#        Hotel Chain: <input name="hotel_chain" type="text" value="{{ hotel_chain if hotel_chain else "" }}">#}
+{#        <br>#}
+{#        <br>#}
+{#        Hotel Stars:#}
+{#        <select name="hotel_stars">#}
+{#            <option value="none"></option>#}
+{#            <option value="1" {{ "selected" if hotel_stars == 1 }}>1</option>#}
+{#            <option value="2" {{ "selected" if hotel_stars == 2 }}>2</option>#}
+{#            <option value="3" {{ "selected" if hotel_stars == 3 }}>3</option>#}
+{#            <option value="4" {{ "selected" if hotel_stars == 4 }}>4</option>#}
+{#            <option value="5" {{ "selected" if hotel_stars == 5 }}>5</option>#}
+{#        </select>#}
+{#        <br>#}
+{#        <br>#}
+{#        Number of rooms in hotel: <input name="num_rooms_in_hotel" type="number" min="0"#}
+{#                                         value="{{ num_rooms_in_hotel if num_rooms_in_hotel else "" }}">#}
+{#        <br>#}
+{#        <br>#}
+{#        Maximum price of room: <input name="price_of_room" type="number" min="0"#}
+{#                              value="{{ price_of_room if price_of_room else "" }}">#}
+{#        <br>#}
+{#        <br>#}
+{#        <button type="submit">Search</button>#}
+{#    </form>#}
+{#</div>#}
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid;
+        padding: 3px;
+    }
+</style>
+<h3>Your rented rooms:</h3>
+{% if rented_rooms %}
+    <table>
+        <tr>
+            <th>Room Num</th>
+            <th>Hotel Name</th>
+            <th>Price</th>
+            <th>Capacity</th>
+            <th>View</th>
+            <th>Amenities</th>
+            <th>Problems</th>
+            <th>Extendable</th>
+            <th>Area</th>
+            <th>Number of rooms in hotel</th>
+            <th>Hotel Stars</th>
+            <th>View Room Info</th>
+        </tr>
+        {% for rented in rented_rooms %}
+            {% set room = rented.get_room() %}
+            <tr>
+                <td>{{ rented.start_date }}</td>
+                <td>{{ rented.end_date }}</td>
+                <td>{{ room.room_num }}</td>
+                <td>{{ room.get_hotel().hotel_name }}</td>
+                <td>{{ room.price }}</td>
+                <td>{{ room.capacity }}</td>
+                <td>{{ room.view }}</td>
+                <td>{{ room.amenities }}</td>
+                <td>{{ room.problems }}</td>
+                <td>{{ room.extendable }}</td>
+                <td>{{ room.get_hotel().city + ", " + room.get_hotel().country }}</td>
+                <td>{{ room.get_hotel().get_num_rooms() }}</td>
+                <td>{{ room.get_hotel().star_num }}</td>
+                <td>
+                    <a href="{{ url_for("book_room", room_num=room.room_num) }}">View Room</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No rented rooms, to rent a room talk to an employee at the hotel. Note that you do not need a booking before hand to rent a room</p>
+{% endif %}
+<h3>Your booked rooms:</h3>
+{% if booked_rooms %}
+    <table>
+        <tr>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Room Num</th>
+            <th>Hotel Name</th>
+            <th>Price</th>
+            <th>Capacity</th>
+            <th>View</th>
+            <th>Amenities</th>
+            <th>Problems</th>
+            <th>Extendable</th>
+            <th>Area</th>
+            <th>Number of rooms in hotel</th>
+            <th>Hotel Stars</th>
+            <th>View Room Info</th>
+        </tr>
+        {% for booking in booked_rooms %}
+            {% set room = booking.get_room() %}
+            <tr>
+                <td>{{ booking.start_date }}</td>
+                <td>{{ booking.end_date }}</td>
+                <td>{{ booking.get_room().room_num }}</td>
+                <td>{{ room.get_hotel().hotel_name }}</td>
+                <td>{{ room.price }}</td>
+                <td>{{ room.capacity }}</td>
+                <td>{{ room.view }}</td>
+                <td>{{ room.amenities }}</td>
+                <td>{{ room.problems }}</td>
+                <td>{{ room.extendable }}</td>
+                <td>{{ room.get_hotel().city + ", " + room.get_hotel().country }}</td>
+                <td>{{ room.get_hotel().get_num_rooms() }}</td>
+                <td>{{ room.get_hotel().star_num }}</td>
+                <td>
+                    <a href="{{ url_for("book_room", room_num=room.room_num) }}">View Room</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No booked rooms, go to <a href="{{ url_for("room_search") }}"> room search</a> to book a room</p>
+{% endif %}
+</body>
+</html>

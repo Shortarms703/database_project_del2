@@ -260,8 +260,10 @@ def book_room(room_num):
 @app.route('/customer_view_rooms')
 def customer_view_rooms():
     # check that user is customer
-    list_of_rooms = []  # a list of only the rooms that the customer has booked/rented
-    return render_template('room_list.html', rooms=list_of_rooms)
+    customer = db.get_customer(session["current_cust_id"])
+    rented_rooms = customer.get_rented_currently_rooms()
+    booked_rooms = customer.get_currently_booked_rooms()
+    return render_template('customers_rooms.html', rented_rooms=rented_rooms, booked_rooms=booked_rooms)
 
 
 @app.route('/customer_account', methods=["GET", "POST"])

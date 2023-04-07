@@ -64,6 +64,26 @@ class Customer(ExecutesSQL):
         sql = f"UPDATE Customer SET password = '{self.password}', hotel_id = '{self.hotel_id}', SIN = '{self.SIN}', first_name = '{self.first_name}', last_name = '{self.last_name}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', registration_date = '{self.registration_date}' WHERE customer_id='{self.customer_id}'"
         self.execute(sql)
 
+    def get_currently_booked_rooms(self):
+        sql = f"SELECT * FROM Book WHERE customer_id='{self.customer_id}'"
+        rows = self.execute(sql)
+        booked_rooms = []
+        for row in rows:
+            booking = Book(row["book_id"], row["room_num"], row["customer_id"], row["start_date"], row["end_date"])
+            if not booking.ended():
+                booked_rooms.append(booking)
+        return booked_rooms
+
+    def get_rented_currently_rooms(self):
+        sql = f"SELECT * FROM Rent WHERE customer_id='{self.customer_id}'"
+        rows = self.execute(sql)
+        rented_rooms = []
+        for row in rows:
+            rented = Rent(row["book_id"], row["room_num"], row["customer_id"], row["start_date"], row["end_date"])
+            if not rented.ended():
+                rented_rooms.append(rented)
+        return rented_rooms
+
 
 class Employee(ExecutesSQL):
 
@@ -88,6 +108,7 @@ class Employee(ExecutesSQL):
     def update(self):
         sql = f"UPDATE Employee SET password = '{self.password}', hotel_id = '{self.hotel_id}', SIN = '{self.SIN}', first_name = '{self.first_name}', last_name = '{self.last_name}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', position = '{self.position}' WHERE employee_id='{self.employee_id}'"
         self.execute(sql)
+
 
 class Hotel(ExecutesSQL):
 
@@ -130,12 +151,24 @@ class Hotel(ExecutesSQL):
 
 class Rent(ExecutesSQL):
 
-    def __int__(self, rent_id, room_num, customer_id, start_date, end_date):
+    def __init__(self, rent_id, room_num, customer_id, start_date, end_date):
         self.book_id = rent_id
         self.room_num = room_num
         self.customer_id = customer_id
         self.start_date = start_date
         self.end_date = end_date
+
+    def get_room(self):
+        import db
+        return db.get_room_from_num(self.room_num)
+
+    def ended(self):
+        today = datetime.datetime.today().date()
+        end = datetime.datetime.strptime(self.end_date, '%Y-%m-%d').date()
+        if end < today:
+            return True
+        else:
+            return False
 
 
 class Book(ExecutesSQL):
@@ -146,6 +179,10 @@ class Book(ExecutesSQL):
         self.customer_id = customer_id
         self.start_date = start_date
         self.end_date = end_date
+
+    def get_room(self):
+        import db
+        return db.get_room_from_num(self.room_num)
 
     def create_booking(self):
         sql = f"INSERT INTO Book VALUES (NULL, '{self.room_num}', '{self.customer_id}', '{self.start_date}', '{self.end_date}')"
@@ -163,6 +200,14 @@ class Book(ExecutesSQL):
         start = datetime.datetime.strptime(self.start_date, '%Y-%m-%d').date()
         end = datetime.datetime.strptime(self.end_date, '%Y-%m-%d').date()
         if end < start:
+            return True
+        else:
+            return False
+
+    def ended(self):
+        today = datetime.datetime.today().date()
+        end = datetime.datetime.strptime(self.end_date, '%Y-%m-%d').date()
+        if end < today:
             return True
         else:
             return False
@@ -209,4 +254,28 @@ class Room(ExecutesSQL):
         return True
 
 
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
 
+    # Example data
+    x = ['Morally wrong', 'Prohibited', 'Ethical use']
+    y = [41, 27, 48]
+
+    # Create a figure and axis object
+    fig, ax = plt.subplots()
+
+    # Create a scatter plot with dots
+    ax.scatter(x, y, color='blue')
+
+    # Set x and y labels
+    ax.set_xlabel('Attitudes towards AI tools')
+    ax.set_ylabel('Percentage of respondents')
+
+    # Set the y-axis limit
+    ax.set_ylim(0, 60)
+
+    # Add horizontal gridlines
+    ax.yaxis.grid(True)
+
+    # Show the plot
+    plt.show()
