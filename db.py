@@ -32,8 +32,8 @@ def execute_file(file):
 
 def init_db():
     execute_file(config.schema_file)
-    # uncomment when these arent empty:
-    # execute_file(config.sample_data_file)
+    # uncomment when these aren't empty:
+    execute_file(config.sample_data_file)
     # execute_file(config.sql_index_file)
     # execute_file(config.sql_views_file)
 
@@ -82,8 +82,8 @@ def init_rooms():
 
 
 
-def db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel_stars, num_rooms_in_hotel,
-                   price_of_room):
+def db_room_search(start_date=None, end_date=None, room_capacity=None, area=None, hotel_chain=None, hotel_stars=None, num_rooms_in_hotel=None,
+                   price_of_room=None):
     no_selection = None  # to compare against parameters to know when there is no selection, might change to None in the future or be specific per parameter idk yet
 
     # don't want to use sql to get the specific rows since we need to sometimes ignore certain conditions when they do not have a selection
@@ -93,7 +93,12 @@ def db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel
 
     for room in rooms:
         searched_for = True
-        # TODO: check dates and area (same city and country?)
+        if start_date != no_selection and not room.check_room_available(start_date, datetime.datetime.max.strftime('%Y-%m-%d')):
+            searched_for = False
+        if end_date != no_selection and not room.check_room_available(datetime.datetime.min.strftime('%Y-%m-%d'), end_date):
+            searched_for = False
+        if area != no_selection and (room.get_hotel().city != area["city"] or room.get_hotel().country != area["country"]):
+            searched_for = False
         if room_capacity != no_selection and room.capacity != room_capacity:
             searched_for = False
         if hotel_chain != no_selection and room.get_hotel().get_chain().name != hotel_chain:
@@ -102,7 +107,7 @@ def db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel
             searched_for = False
         if num_rooms_in_hotel != no_selection and room.get_hotel().get_num_rooms() != num_rooms_in_hotel:
             searched_for = False
-        if price_of_room != no_selection and room.price != price_of_room:
+        if price_of_room != no_selection and room.price > price_of_room:
             searched_for = False
 
         if searched_for:
@@ -191,25 +196,47 @@ def delete_employee(employee_id):
     sql = f"DELETE FROM Employee WHERE employee_id='{employee_id}'"
     execute(sql)
 
+def get_all_areas():
+    sql = f"SELECT city, country FROM Hotel"
+    rows = execute(sql)
+    areas = [f"{x['city']}, {x['country']}" for x in rows]
+
+    unique_areas = []
+    # remove duplicates from list areas
+    for area in areas:
+        if area not in unique_areas:
+            unique_areas.append(area)
+
+    return unique_areas
+
+
 if __name__ == '__main__':
+    a = get_all_areas()
+    for x in a:
+        print(x)
     # checking the view worked
     # result = (execute("SELECT * FROM hotel_count_by_area"))
     # for row in result:
     #     print(row[0], row[1])
 
-    #checking capacity view
+    # checking capacity view
     # execute_file(config.sql_views_file)
     # rows = execute("SELECT * FROM room_capacity_by_hotel")
     # for row in rows:
     #     print(row[0], row[1], row[2])
 
     # print(get_unavailable_days_for_room(1))
-    room = get_room_from_num(1)
-    a = room.check_room_available("2023-04-23", "2023-04-24")
-    print(a)
+    # room = get_room_from_num(1)
+    # a = room.check_room_available("2023-04-23", "2023-04-24")
+    # print(a)
     pass
-    # rooms = db_room_search(start_date="", end_date="", room_capacity=2, area="", hotel_chain="test", hotel_stars=3,
-    #                        num_rooms_in_hotel="", price_of_room="")
+    # rooms = db_room_search(start_date="2023-04-10")
+    # # rooms = db_room_search(end_date="2023-04-04")
+    # for x in rooms:
+    #     print(x)
+    #     print(x.get_unavailable_days_for_room())
+
+    # print(rooms)
     # print(get_room_from_num(2))
     # get_hotel()
     # print("searched rooms", rooms)
@@ -222,5 +249,6 @@ if __name__ == '__main__':
 
     # execute_file(config.schema_file)
     # execute_file(config.sample_data_file)
-    # init_hotels()
-    # init_rooms()
+    init_db()
+    init_hotels()
+    init_rooms()

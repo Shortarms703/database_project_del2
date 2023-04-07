@@ -63,6 +63,7 @@ def logout():
     session["current_emp_id"] = ""
     return redirect(url_for("welcome"))
 
+
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -102,7 +103,8 @@ def create_customer():
         postal_code = request.form["postal_code"]
         country = request.form["country"]
         hotel_id = request.form["chain_name_hotel_name"]
-        current_customer = Customer(None, sin, hotel_id, first_name, last_name, datetime.datetime.today().strftime('%Y-%m-%d'),
+        current_customer = Customer(None, sin, hotel_id, first_name, last_name,
+                                    datetime.datetime.today().strftime('%Y-%m-%d'),
                                     street, city, postal_code, country, password)
         current_customer.create_cust()
 
@@ -150,8 +152,9 @@ def create_employee():
 def room_search():
     # checks that you are logged in as a customer
     list_of_rooms = db.get_all_rooms()
+    areas = db.get_all_areas()
     if request.method == "POST":
-        print(request.form.to_dict())
+        # print(request.form.to_dict())
         if request.form["start_date"] == "":
             start_date = None
         else:
@@ -169,8 +172,11 @@ def room_search():
 
         if request.form["area"] == "":
             area = None
+            string_area = ""
         else:
-            area = request.form["area"]
+            area = request.form["area"].split(', ')
+            area = {"city": area[0], "country": area[1]}
+            string_area = area["city"] + ", " + area["country"]
 
         if request.form["hotel_chain"] == "":
             hotel_chain = None
@@ -194,16 +200,17 @@ def room_search():
 
         list_of_rooms = db.db_room_search(start_date, end_date, room_capacity, area, hotel_chain, hotel_stars,
                                           num_rooms_in_hotel, price_of_room)
-        return render_template('room_list.html', rooms=list_of_rooms,
+
+        return render_template('room_list.html', rooms=list_of_rooms, areas=areas,
                                start_date=start_date,
                                end_date=end_date,
                                room_capacity=room_capacity,
-                               area=area,
+                               area=string_area,
                                hotel_chain=hotel_chain,
                                hotel_stars=hotel_stars,
                                num_rooms_in_hotel=num_rooms_in_hotel,
                                price_of_room=price_of_room)
-    return render_template('room_list.html', rooms=list_of_rooms)
+    return render_template('room_list.html', rooms=list_of_rooms, areas=areas)
 
 
 @app.route('/book_room/<room_num>', methods=["GET", "POST"])
@@ -288,7 +295,6 @@ def delete_account():
         db.delete_customer(customer_id)
 
     return redirect(url_for("welcome"))
-
 
 
 # EMPLOYEE STUFF
