@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Edit Hotel</title>
 </head>
 <body>
 {% include "header.html" %}
+{% if not hotel %}
+    <p>No Hotel is associated with this account.</p>
+{% else %}
 <form method="POST">
     hotel_id: <input name="hotel_id" type="text" value="{{ hotel["hotel_id"] }}" readonly>
     <br>
@@ -31,5 +34,6 @@
 </form>
 <br>
 <a href="{{ url_for("delete_hotel", hotel_id = hotel["hotel_id"]) }}" style="color: red">Delete Hotel</a>
+{% endif %}
 </body>
 </html>

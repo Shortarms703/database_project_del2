@@ -126,9 +126,13 @@ class Hotel(ExecutesSQL):
         self.phone_number = phone_number
 
     def create_hotel(self):
-        sql = f" insert into Hotel values (NULL, '{self.chain_name}', '{self.hotel_name}', '{self.star_num}', '{self.street}', '{self.city}', " \
+        sql = f" insert into Hotel values ('{self.hotel_id}', '{self.chain_name}', '{self.hotel_name}', '{self.star_num}', '{self.street}', '{self.city}', " \
               f"'{self.postal_code}', '{self.country}', '{self.email}', '{self.phone_number}')"
-        self.execute(sql)
+        result = self.execute(sql)
+        if result:
+            return True
+        else:
+            return False
 
     def update(self):
         sql = f"UPDATE Hotel SET hotel_name = '{self.hotel_name}', star_num = '{self.star_num}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', email = '{self.email}', phone_number = '{self.phone_number}' WHERE hotel_id='{self.hotel_id}'"

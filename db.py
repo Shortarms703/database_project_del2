@@ -135,6 +135,13 @@ def get_hotel_from_create():
             [chain_hotel[0], chain_hotel[1], chain_hotel[2]])
     return chain_hotel_list
 
+def get_chains():
+    sql = "SELECT name FROM Chain"
+    chains = execute(sql)
+    chain_list = []
+    for chain in chains:
+        chain_list.append(chain["name"])
+    return chain_list
 
 def get_room_from_num(room_num):
     sql = f"SELECT * FROM Room WHERE room_num = '{room_num}'"

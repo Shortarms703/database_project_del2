@@ -354,9 +354,29 @@ def delete_hotel(hotel_id):
     db.delete_hotel(hotel_id)
     return redirect(url_for("rent_room")) #not really sure abt where to go after this
 
-@app.route('/add_hotel')
+@app.route('/add_hotel',  methods=["GET", "POST"])
 def add_hotel():
-    return render_template('add_hotel.html')
+    create_success = False
+    if request.method == "POST":
+        hotel_id = request.form["hotel_id"]
+        chain_name = request.form["chain_name"]
+        hotel_name = request.form["hotel_name"]
+        star_num = request.form["star_num"]
+        email = request.form["email"]
+        phone_number = request.form["phone_number"]
+        street = request.form["street"]
+        city = request.form["city"]
+        postal_code = request.form["postal_code"]
+        country = request.form["country"]
+        
+        hotel = Hotel(hotel_id, chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number)
+        create_success = hotel.create_hotel()
+
+        if create_success:
+            return redirect(url_for("add_hotel"))
+
+    chains = db.get_chains()
+    return render_template('add_hotel.html', chains=chains, create_success=create_success)
 
 
 @app.route('/room_list')
