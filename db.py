@@ -230,6 +230,21 @@ def get_hotel(hotel_id):
     else:
         return False
 
+def get_chain_from_employee(employee_id):
+    # employee = get_employee(employee_id)
+    # hotel_id = employee.hotel_id
+    # return get_hotel(hotel_id).chain_name
+    sql = f"""
+        SELECT h.chain_name
+        FROM Hotel h
+        JOIN (SELECT hotel_id FROM Employee WHERE employee_id = {employee_id}) as e
+        ON h.hotel_id = e.hotel_id
+    """
+    result = execute(sql)
+    if result:
+        return result[0][0]
+    return None
+
 def delete_customer(customer_id):
     sql = f"DELETE FROM Customer WHERE customer_id='{customer_id}'"
     execute(sql)
@@ -279,7 +294,7 @@ if __name__ == '__main__':
     # room = get_room_from_num(1)
     # a = room.check_room_available("2023-04-23", "2023-04-24")
     # print(a)
-    #pass
+    pass
     # rooms = db_room_search(start_date="2023-04-10")
     # # rooms = db_room_search(end_date="2023-04-04")
     # for x in rooms:

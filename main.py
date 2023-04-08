@@ -371,8 +371,8 @@ def add_hotel():
         if create_success:
             return redirect(url_for("add_hotel"))
 
-    chains = db.get_chains()
-    return render_template('add_hotel.html', chains=chains, create_success=create_success)
+    chain = db.get_chain_from_employee(session["current_emp_id"])
+    return render_template('add_hotel.html', chain=chain, create_success=create_success)
 
 
 @app.route('/room_list')

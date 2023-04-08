@@ -12,19 +12,17 @@
     </script>
 {% endif %}
 <form method="POST">
-    <select name="chain_name">
-        {% for chain in chains %}
+    Chain Name: <select name="chain_name">
         <option value="{{chain}}">{{chain}}</option>
-        {% endfor %}
     </select>
     <br><br>
-    hotel_name: <input name="hotel_name" type="text">
+    Hotel Name: <input name="hotel_name" type="text">
     <br><br>
-    star_num: <input name="star_num" type="number" min="0" >
+    Number of Stars: <input name="star_num" type="number" min="0" >
     <br><br>
-    email: <input name="email" type="email">
+    Email: <input name="email" type="email">
     <br><br>
-    phone_number: <input name="phone_number" type="tel">
+    Phone: <input name="phone_number" type="tel">
     <br><br>
 
     <div style = font-size:30px>
