@@ -33,10 +33,12 @@
 <header>
     <nav>
         <a href="{{ url_for("room_search") }}">Book a Room</a>
-        <a href="{{ url_for("customer_view_rooms") }}">View Booked Rooms</a>
-        <a href="{{ url_for("customer_account") }}">Account Details</a>
-        <a href="{{ url_for("employee_account") }}">Employee Details</a>
-        <!-- completely for testing since no good way to access it currently exists -->
+        {% if session["cust_or_emp"] == 'customer' %}
+            <a href="{{ url_for("customer_view_rooms") }}">View Booked Rooms</a>
+            <a href="{{ url_for("customer_account") }}">Account Details</a>
+        {% elif session["cust_or_emp"] == 'employee' %}
+            <a href="{{ url_for("employee_account") }}">Account Details</a>
+        {% endif %}
         <a href="{{ url_for("logout") }}">Logout</a>
     </nav>
 </header>

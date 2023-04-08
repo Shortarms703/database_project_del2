@@ -112,8 +112,8 @@ class Employee(ExecutesSQL):
 
 class Hotel(ExecutesSQL):
 
-    def __init__(self, chain_name, hotel_name, star_num=None, street=None, city=None, postal_code=None,
-                 country=None, email=None, phone_number=None, hotel_id = None):
+    def __init__(self, hotel_id, chain_name, hotel_name, star_num=None, street=None, city=None, postal_code=None,
+                 country=None, email=None, phone_number=None):
         self.hotel_id = hotel_id
         self.chain_name = chain_name
         self.hotel_name = hotel_name

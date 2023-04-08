@@ -193,7 +193,7 @@ def get_hotel(hotel_id):
     rows = execute(sql)
     if rows:
         row = rows[0]
-        hotel = Hotel(row["chain_name"], row["hotel_name"], row["star_num"], row["street"], row["city"], row["postal_code"], row["country"], row["email"], row["phone_number"], row["hotel_id"])
+        hotel = Hotel(row["hotel_id"], row["chain_name"], row["hotel_name"], row["star_num"], row["street"], row["city"], row["postal_code"], row["country"], row["email"], row["phone_number"],)
         return hotel
     else:
         return False
