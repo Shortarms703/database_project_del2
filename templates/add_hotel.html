@@ -12,8 +12,6 @@
     </script>
 {% endif %}
 <form method="POST">
-    hotel_id: <input name="hotel_id" type="number" min="0">
-    <br><br>
     <select name="chain_name">
         {% for chain in chains %}
         <option value="{{chain}}">{{chain}}</option>

@@ -115,6 +115,23 @@ def db_room_search(start_date=None, end_date=None, room_capacity=None, area=None
     return search_result
 
 
+def db_hotel_search(chain_name = None, hotel_stars=None, area=None):
+    no_selection = None
+    search_result = []
+    if chain_name == no_selection:
+        return search_result
+        
+    hotels = get_hotels_from_chain(chain_name)
+    for hotel in hotels:
+        searched_for = True
+        if hotel_stars != no_selection and hotel.star_num != hotel_stars:
+            searched_for = False
+        if area != no_selection and (hotel.city != area["city"] or hotel.country != area["country"]):
+            searched_for = False
+        if searched_for:
+            search_result.append(hotel)
+    return search_result
+
 def get_all_rooms():
     sql = f"SELECT * FROM Room"
     rows = execute(sql)
@@ -125,6 +142,14 @@ def get_all_rooms():
         rooms.append(room)
     return rooms
 
+def get_hotels_from_chain(chain_name):
+    sql = f"SELECT * FROM Hotel WHERE chain_name ='{chain_name}'"
+    rows = execute(sql)
+    hotels = []
+    for row in rows:
+        hotel = Hotel(row["hotel_id"], row["chain_name"], row["hotel_name"], row["star_num"], row["street"], row["city"], row["postal_code"], row["country"], row["email"], row["phone_number"],)
+        hotels.append(hotel)
+    return hotels
 
 def get_hotel_from_create():
     sql = f"SELECT chain_name, hotel_name, hotel_id FROM Hotel, Chain WHERE Hotel.chain_name = Chain.name"
@@ -254,7 +279,7 @@ if __name__ == '__main__':
     # room = get_room_from_num(1)
     # a = room.check_room_available("2023-04-23", "2023-04-24")
     # print(a)
-    pass
+    #pass
     # rooms = db_room_search(start_date="2023-04-10")
     # # rooms = db_room_search(end_date="2023-04-04")
     # for x in rooms:

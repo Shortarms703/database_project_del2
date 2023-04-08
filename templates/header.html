@@ -39,7 +39,7 @@
         {% elif session["cust_or_emp"] == 'employee' %}
             <a href="{{ url_for("employee_account") }}">Account Details</a>
             {% if session["position"]|lower|replace(' ', '') == 'manager' %}
-                <a href="{{ url_for("edit_hotel")}}">Edit Hotel</a>
+                <a href="{{ url_for("hotel_search")}}">Edit Hotel</a>
                 <a href="{{ url_for("add_hotel")}}">Add A Hotel</a>
             {% endif %}
         {% endif %}

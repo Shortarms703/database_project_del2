@@ -331,14 +331,11 @@ def employee_account():
 
 # MANAGER STUFF
 
-@app.route('/edit_hotel', methods=["GET", "POST"])
-def edit_hotel():
-    hotel_id = db.get_employee(session["current_emp_id"]).hotel_id
+@app.route('/edit_hotel/<hotel_id>', methods=["GET", "POST"])
+def edit_hotel(hotel_id):    
     hotel = db.get_hotel(hotel_id)
     if request.method == "POST":
-        hotel.hotel_id = request.form["hotel_id"]
-        hotel.chain_name = request.form["hotel_name"]
-        hotel.star_num = request.form["star_num"]
+        hotel.hotel_name == request.form["hotel_name"]
         hotel.street = request.form["street"]
         hotel.city = request.form["city"]
         hotel.postal_code = request.form["postal_code"]
@@ -346,7 +343,7 @@ def edit_hotel():
         hotel.email = request.form["email"]
         hotel.phone_number = request.form["phone_number"]
         hotel.update()
-        return redirect(url_for("edit_hotel"))
+        # return redirect(url_for("edit_hotel"))
     return render_template('edit_hotel.html', hotel = hotel)
 
 @app.route('/delete_hotel/<int:hotel_id>')
@@ -358,7 +355,6 @@ def delete_hotel(hotel_id):
 def add_hotel():
     create_success = False
     if request.method == "POST":
-        hotel_id = request.form["hotel_id"]
         chain_name = request.form["chain_name"]
         hotel_name = request.form["hotel_name"]
         star_num = request.form["star_num"]
@@ -369,7 +365,7 @@ def add_hotel():
         postal_code = request.form["postal_code"]
         country = request.form["country"]
         
-        hotel = Hotel(hotel_id, chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number)
+        hotel = Hotel(NULL, chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number)
         create_success = hotel.create_hotel()
 
         if create_success:
@@ -384,11 +380,39 @@ def room_list():
     list_of_rooms = []
     return render_template('room_list.html', rooms=list_of_rooms)
 
+@app.route('/hotel_list')
+def hotel_list():
+    chain_name = db.get_employee(session["current_emp_id"]).get_chain()
+    list_of_hotels = db.get_hotels_from_chain(chain_name)
+    return render_template('hotel_list.html', hotels=list_of_hotels)
+
+@app.route('/hotel_search', methods=["GET", "POST"])
+def hotel_search():
+    employee = db.get_employee(session["current_emp_id"])
+    chain_name = employee.get_chain()
+    list_of_hotels = db.get_hotels_from_chain(chain_name)
+    areas = db.get_all_areas()
+    if request.method == "POST":
+        if request.form["area"] == "":
+                area = None
+        else:
+            area = request.form["area"].split(', ')
+            area = {"city": area[0], "country": area[1]}
+            string_area = area["city"] + ", " + area["country"]
+
+        if request.form["hotel_stars"] == "none":
+            hotel_stars = None
+        else:
+            hotel_stars = int(request.form["hotel_stars"])
+
+        list_of_hotels = db.db_hotel_search(chain_name=chain_name, hotel_stars=hotel_stars, area=area)
+        return render_template('hotel_list.html', hotels = list_of_hotels, areas = areas, area=area, chain_name=chain_name, hotel_stars=hotel_stars)
+    return render_template("hotel_list.html", hotels = list_of_hotels, areas=areas)
+
 
 @app.route('/edit_room')
 def edit_room():
     return render_template('edit_room_info.html')
-
 
 @app.route('/add_room')
 def add_room():

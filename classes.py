@@ -109,6 +109,13 @@ class Employee(ExecutesSQL):
         sql = f"UPDATE Employee SET password = '{self.password}', hotel_id = '{self.hotel_id}', SIN = '{self.SIN}', first_name = '{self.first_name}', last_name = '{self.last_name}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', position = '{self.position}' WHERE employee_id='{self.employee_id}'"
         self.execute(sql)
 
+    def get_chain(self):
+        sql = f"SELECT chain_name FROM Hotel WHERE hotel_id= '{self.hotel_id}'"
+        result = self.execute(sql)
+        chain_name = None
+        if result:
+            chain_name = result[0][0]
+        return chain_name
 
 class Hotel(ExecutesSQL):
 
