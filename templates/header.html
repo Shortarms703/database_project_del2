@@ -32,11 +32,12 @@
 <body>
 <header>
     <nav>
-        <a href="{{ url_for("room_search") }}">Book a Room</a>
         {% if session["cust_or_emp"] == 'customer' %}
+            <a href="{{ url_for("room_search") }}">Book a Room</a>
             <a href="{{ url_for("customer_view_rooms") }}">View Booked Rooms</a>
             <a href="{{ url_for("customer_account") }}">Account Details</a>
         {% elif session["cust_or_emp"] == 'employee' %}
+            <a href="{{ url_for("room_search") }}">Room Search</a>
             <a href="{{ url_for("employee_account") }}">Account Details</a>
             {% if session["position"]|lower|replace(' ', '') == 'manager' %}
                 <a href="{{ url_for("hotel_search")}}">Edit Hotel</a>

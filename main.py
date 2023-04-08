@@ -410,14 +410,27 @@ def hotel_search():
     return render_template("hotel_list.html", hotels = list_of_hotels, areas=areas)
 
 
-@app.route('/edit_room')
-def edit_room():
-    return render_template('edit_room_info.html')
+@app.route('/edit_room/<room_num>', methods=["GET", "POST"])
+def edit_room(room_num):
+    room = db.get_room_from_num(room_num)
+    if request.method == "POST":
+        room.price = request.form["price"]
+        room.capacity = request.form["capacity"]
+        room.view = request.form["view"]
+        room.amenities = request.form["amenities"]
+        room.problems = request.form["problems"]
+        room.extendable = request.form["extendable"]
+        room.update()
+    return render_template('edit_room_info.html', room = room)
 
 @app.route('/add_room')
 def add_room():
     return render_template('add_room.html')
 
+@app.route('/delete_room/<room_num>')
+def delete_room(room_num):
+    db.delete_room(room_num)
+    return redirect(url_for("rent_room"))
 
 if __name__ == '__main__':
     app.run()
