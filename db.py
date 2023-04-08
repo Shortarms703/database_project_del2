@@ -188,12 +188,30 @@ def get_employee(employee_ID):
     else:
         return False
 
+def get_hotel(hotel_id):
+    sql = f"SELECT * FROM Hotel WHERE hotel_id='{hotel_id}'"
+    rows = execute(sql)
+    if rows:
+        row = rows[0]
+        hotel = Hotel(row["chain_name"], row["hotel_name"], row["star_num"], row["street"], row["city"], row["postal_code"], row["country"], row["email"], row["phone_number"], row["hotel_id"])
+        return hotel
+    else:
+        return False
+
 def delete_customer(customer_id):
     sql = f"DELETE FROM Customer WHERE customer_id='{customer_id}'"
     execute(sql)
 
 def delete_employee(employee_id):
     sql = f"DELETE FROM Employee WHERE employee_id='{employee_id}'"
+    execute(sql)
+
+def delete_hotel(hotel_id):
+    sql = f"DELETE FROM Hotel WHERE hotel_id='{hotel_id}'"
+    execute(sql)
+
+def delete_room(room_num):
+    sql = f"DELETE FROM Room WHERE room_num='{room_num}'"
     execute(sql)
 
 def get_all_areas():

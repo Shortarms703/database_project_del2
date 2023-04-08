@@ -112,8 +112,8 @@ class Employee(ExecutesSQL):
 
 class Hotel(ExecutesSQL):
 
-    def __init__(self, hotel_id, chain_name, hotel_name, star_num=None, street=None, city=None, postal_code=None,
-                 country=None, email=None, phone_number=None):
+    def __init__(self, chain_name, hotel_name, star_num=None, street=None, city=None, postal_code=None,
+                 country=None, email=None, phone_number=None, hotel_id = None):
         self.hotel_id = hotel_id
         self.chain_name = chain_name
         self.hotel_name = hotel_name
@@ -124,6 +124,15 @@ class Hotel(ExecutesSQL):
         self.country = country
         self.email = email
         self.phone_number = phone_number
+
+    def create_hotel(self):
+        sql = f" insert into Hotel values (NULL, '{self.chain_name}', '{self.hotel_name}', '{self.star_num}', '{self.street}', '{self.city}', " \
+              f"'{self.postal_code}', '{self.country}', '{self.email}', '{self.phone_number}')"
+        self.execute(sql)
+
+    def update(self):
+        sql = f"UPDATE Hotel SET hotel_name = '{self.hotel_name}', star_num = '{self.star_num}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', email = '{self.email}', phone_number = '{self.phone_number}' WHERE hotel_id='{self.hotel_id}'"
+        self.execute(sql)
 
     def get_chain(self):
         # from classes.chain import Chain
@@ -227,6 +236,15 @@ class Room(ExecutesSQL):
 
     def __repr__(self):
         return str(self.__dict__)
+
+    def create_room(self):
+        sql = f" insert into Room values ('{self.room_num}', '{self.hotel_id}', '{self.price}', '{self.capacity}', '{self.view}', '{self.amenities}', " \
+              f"'{self.problems}', '{self.extendable}')"
+        self.execute(sql)
+
+    def update(self):
+        sql = f"UPDATE Room SET price = '{self.price}', capacity = '{self.capacity}', view = '{self.view}', amenities = '{self.amenities}', problems = '{self.problems}', extendable = '{self.extendable}' WHERE room_num='{self.room_num}'"
+        self.execute(sql)
 
     def get_hotel(self) -> Hotel:
         sql = f"SELECT * FROM Hotel WHERE hotel_id = '{self.hotel_id}'"
