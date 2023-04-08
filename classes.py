@@ -79,7 +79,7 @@ class Customer(ExecutesSQL):
         rows = self.execute(sql)
         rented_rooms = []
         for row in rows:
-            rented = Rent(row["book_id"], row["room_num"], row["customer_id"], row["start_date"], row["end_date"])
+            rented = Rent(row["rent_id"], row["room_num"], row["customer_id"], row["start_date"], row["end_date"])
             if not rented.ended():
                 rented_rooms.append(rented)
         return rented_rooms
@@ -162,6 +162,10 @@ class Rent(ExecutesSQL):
         import db
         return db.get_room_from_num(self.room_num)
 
+    def create_rental(self):
+        sql = f"INSERT INTO Rent VALUES (NULL, '{self.room_num}', '{self.customer_id}', '{self.start_date}', '{self.end_date}')"
+        self.execute(sql)
+
     def ended(self):
         today = datetime.datetime.today().date()
         end = datetime.datetime.strptime(self.end_date, '%Y-%m-%d').date()
@@ -212,6 +216,10 @@ class Book(ExecutesSQL):
         else:
             return False
 
+    def convert_to_rental(self):
+        rental = Rent(self.book_id, self.room_num, self.customer_id, self.start_date, self.end_date)
+        rental.create_rental()
+
 
 class Room(ExecutesSQL):
 
@@ -234,6 +242,15 @@ class Room(ExecutesSQL):
         hotel = Hotel(row["hotel_id"], row["chain_name"], row["hotel_name"], row["star_num"], row["street"],
                       row["city"], row["postal_code"], row["country"], row["email"], row["phone_number"])
         return hotel
+
+    def get_bookings(self) -> [Book]:
+        sql = f"SELECT * FROM Book WHERE room_num='{self.room_num}'"
+        rows = self.execute(sql)
+        bookings = []
+        for row in rows:
+            booking = Book(row["book_id"], row["room_num"], row["customer_id"], row["start_date"], row["end_date"])
+            bookings.append(booking)
+        return bookings
 
     def get_unavailable_days_for_room(self):
         sql = f"""SELECT start_date, end_date FROM Book WHERE room_num = '{self.room_num}' 

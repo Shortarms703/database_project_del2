@@ -178,6 +178,16 @@ def get_customer(customer_id):
     else:
         return False
 
+def get_customer_from_name(first_name, last_name):
+    sql = f"SELECT * FROM Customer WHERE first_name='{first_name}' AND last_name='{last_name}'"
+    rows = execute(sql)
+    if len(rows) == 1:
+        row = rows[0]
+        customer = get_customer(row["customer_id"])
+        return customer
+    else:
+        return False
+
 def get_employee(employee_ID):
     sql = f"SELECT * FROM Employee WHERE employee_id='{employee_ID}'"
     rows = execute(sql)

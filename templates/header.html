@@ -31,14 +31,20 @@
 </head>
 <body>
 <header>
-    <nav>
+    {% if session["cust_or_emp"] == "customer" %}
+        <nav>
         <a href="{{ url_for("room_search") }}">Book a Room</a>
         <a href="{{ url_for("customer_view_rooms") }}">View Booked Rooms</a>
         <a href="{{ url_for("customer_account") }}">Account Details</a>
-        <a href="{{ url_for("employee_account") }}">Employee Details</a>
-        <!-- completely for testing since no good way to access it currently exists -->
         <a href="{{ url_for("logout") }}">Logout</a>
-    </nav>
+        </nav>{% endif %}
+    {% if session["cust_or_emp"] == "employee" %}
+        <nav>
+            <a href="{{ url_for("room_search") }}">Rent a room</a>
+            <a href="{{ url_for("employee_account") }}">Employee Details</a>
+            <a href="{{ url_for("logout") }}">Logout</a>
+        </nav>
+    {% endif %}
 </header>
 </body>
 </html>

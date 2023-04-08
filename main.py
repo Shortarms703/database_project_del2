@@ -76,7 +76,7 @@ def login():
                 return render_template('login.html')
             else:
                 session["current_emp_id"] = value
-                return redirect(url_for("rent_room"))
+                return redirect(url_for("room_search"))
 
         if session["cust_or_emp"] == "customer":
             value = db.check_if_login_valid_cust(name, password)
@@ -150,11 +150,9 @@ def create_employee():
 
 @app.route('/room_search', methods=["GET", "POST"])
 def room_search():
-    # checks that you are logged in as a customer
     list_of_rooms = db.get_all_rooms()
     areas = db.get_all_areas()
     if request.method == "POST":
-        # print(request.form.to_dict())
         if request.form["start_date"] == "":
             start_date = None
         else:
@@ -301,10 +299,35 @@ def delete_account():
 
 # EMPLOYEE STUFF
 
-@app.route('/rent_room', methods=["GET", "POST"])
-def rent_room():
-    list_of_rooms = []
-    return render_template('room_list.html', rooms=list_of_rooms)
+@app.route('/rent_room/<room_num>', methods=["GET", "POST"])
+def rent_room(room_num):
+    room = db.get_room_from_num(room_num)
+    if request.method == "POST":
+        start_date = request.form["start_date"]
+        end_date = request.form["end_date"]
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        card_number = request.form["card_number"]
+        expiration_date = request.form["expiration_date"]
+        cvv = request.form["cvv"]
+        customer = db.get_customer_from_name(first_name, last_name)
+        rental = Rent(None, room_num, customer.customer_id, start_date, end_date)
+        rental.create_rental()
+    unavailable_days = room.get_unavailable_days_for_room()
+    bookings = room.get_bookings()
+    return render_template('rent_room.html', room=room, unavailable_days=unavailable_days, bookings=bookings, db=db)
+
+
+@app.route('/convert_to_rental/<room_num>')
+def convert_to_rental(room_num):
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+    room = db.get_room_from_num(room_num)
+    bookings = room.get_bookings()
+    for booking in bookings:
+        if booking.start_date == start_date and booking.end_date == end_date:
+            booking.convert_to_rental()
+    return redirect(url_for("rent_room", room_num=room_num))
 
 
 @app.route('/employee_account', methods=["GET", "POST"])

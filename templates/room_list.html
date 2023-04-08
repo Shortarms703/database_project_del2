@@ -44,7 +44,7 @@
         <br>
         <br>
         Maximum price of room: <input name="price_of_room" type="number" min="0"
-                              value="{{ price_of_room if price_of_room else "" }}">
+                                      value="{{ price_of_room if price_of_room else "" }}">
         <br>
         <br>
         <button type="submit">Search</button>
@@ -90,7 +90,11 @@
             <td>{{ room.get_hotel().get_num_rooms() }}</td>
             <td>{{ room.get_hotel().star_num }}</td>
             <td>
-                <a href="{{ url_for("book_room", room_num=room.room_num) }}">Book Room</a>
+                {% if session["cust_or_emp"] == "customer" %}
+                    <a href="{{ url_for("book_room", room_num=room.room_num) }}">Book Room</a>
+                {% elif session["cust_or_emp"] == "employee" %}
+                    <a href="{{ url_for("rent_room", room_num=room.room_num) }}">Rent Room</a>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}
