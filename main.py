@@ -331,11 +331,28 @@ def employee_account():
 
 # MANAGER STUFF
 
-@app.route('/edit_hotel')
+@app.route('/edit_hotel', methods=["GET", "POST"])
 def edit_hotel():
-    # edit/delete hotel
-    return render_template('edit_hotel.html')
+    hotel_id = db.get_employee(session["current_emp_id"]).hotel_id
+    hotel = db.get_hotel(hotel_id)
+    if request.method == "POST":
+        hotel.hotel_id = request.form["hotel_id"]
+        hotel.chain_name = request.form["hotel_name"]
+        hotel.star_num = request.form["star_num"]
+        hotel.street = request.form["street"]
+        hotel.city = request.form["city"]
+        hotel.postal_code = request.form["postal_code"]
+        hotel.country = request.form["country"]
+        hotel.email = request.form["email"]
+        hotel.phone_number = request.form["phone_number"]
+        hotel.update()
+        return redirect(url_for("edit_hotel"))
+    return render_template('edit_hotel.html', hotel = hotel)
 
+@app.route('/delete_hotel/<int:hotel_id>')
+def delete_hotel(hotel_id):
+    db.delete_hotel(hotel_id)
+    return redirect(url_for("rent_room")) #not really sure abt where to go after this
 
 @app.route('/add_hotel')
 def add_hotel():
