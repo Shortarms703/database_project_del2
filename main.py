@@ -13,6 +13,8 @@ app.secret_key = 'f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae
 def setup():
     # TODO actually call this sometime
     db.init_db()
+    db.init_hotels()
+    db.init_rooms()
 
 
 # LOGIN STUFF
@@ -302,6 +304,9 @@ def delete_account():
 @app.route('/rent_room/<room_num>', methods=["GET", "POST"])
 def rent_room(room_num):
     room = db.get_room_from_num(room_num)
+    customer_found_message = ""
+    availability_message = ""
+    message_color = ""
     if request.method == "POST":
         start_date = request.form["start_date"]
         end_date = request.form["end_date"]
@@ -311,11 +316,40 @@ def rent_room(room_num):
         expiration_date = request.form["expiration_date"]
         cvv = request.form["cvv"]
         customer = db.get_customer_from_name(first_name, last_name)
-        rental = Rent(None, room_num, customer.customer_id, start_date, end_date)
-        rental.create_rental()
+        if not customer:
+            customer_found_message = f"Error finding customer with first name: {first_name} and last name: {last_name}"
+            message_color = "red"
+        else:
+            rental = Rent(None, room_num, customer.customer_id, start_date, end_date)
+
+
+            # checks that rental does not start in the past
+            if rental.starts_in_past():
+                availability_message = "Cannot create booking that starts in the past"
+                message_color = "red"
+
+            # check that start is before end
+            elif rental.start_date_before_end():
+                availability_message = "End date cannot come before start date"
+                message_color = "red"
+
+            # checks that room is available
+            elif not room.check_room_available(start_date, end_date):
+                availability_message = "Room is unavailable for that time period"
+                message_color = "red"
+
+            else:
+                rental.create_rental()
+                availability_message = "Room successfully booked"
+                message_color = "green"
+
+    today = datetime.datetime.today()
+    today_date = today.strftime('%Y-%m-%d')
+    tomorrow_date = (today + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+
     unavailable_days = room.get_unavailable_days_for_room()
     bookings = room.get_bookings()
-    return render_template('rent_room.html', room=room, unavailable_days=unavailable_days, bookings=bookings, db=db)
+    return render_template('rent_room.html', room=room, unavailable_days=unavailable_days, bookings=bookings, db=db, availability_message=availability_message, message_color=message_color, today_date=today_date, tomorrow_date=tomorrow_date, customer_found_message=customer_found_message)
 
 
 @app.route('/convert_to_rental/<room_num>')

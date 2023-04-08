@@ -221,9 +221,9 @@ def get_all_areas():
 
 
 if __name__ == '__main__':
-    a = get_all_areas()
-    for x in a:
-        print(x)
+    # a = get_all_areas()
+    # for x in a:
+    #     print(x)
     # checking the view worked
     # result = (execute("SELECT * FROM hotel_count_by_area"))
     # for row in result:

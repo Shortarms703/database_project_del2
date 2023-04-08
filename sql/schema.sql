@@ -78,6 +78,7 @@ CREATE TABLE Book(
     customer_id INTEGER NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
+    active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY(room_num) REFERENCES Room(room_num),
     FOREIGN KEY(customer_id) REFERENCES Customer(customer_id)
 );

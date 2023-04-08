@@ -69,8 +69,8 @@ class Customer(ExecutesSQL):
         rows = self.execute(sql)
         booked_rooms = []
         for row in rows:
-            booking = Book(row["book_id"], row["room_num"], row["customer_id"], row["start_date"], row["end_date"])
-            if not booking.ended():
+            booking = Book(row["book_id"], row["room_num"], row["customer_id"], row["start_date"], row["end_date"], row["active"])
+            if not booking.ended() and booking.active:
                 booked_rooms.append(booking)
         return booked_rooms
 
@@ -174,23 +174,41 @@ class Rent(ExecutesSQL):
         else:
             return False
 
+    def starts_in_past(self):
+        today = datetime.datetime.today().date()
+        start = datetime.datetime.strptime(self.start_date, '%Y-%m-%d').date()
+        if start < today:
+            return True
+        else:
+            return False
+
+    def start_date_before_end(self):
+        start = datetime.datetime.strptime(self.start_date, '%Y-%m-%d').date()
+        end = datetime.datetime.strptime(self.end_date, '%Y-%m-%d').date()
+        if end < start:
+            return True
+        else:
+            return False
+
 
 class Book(ExecutesSQL):
 
-    def __init__(self, book_id, room_num, customer_id, start_date, end_date):
+    def __init__(self, book_id, room_num, customer_id, start_date, end_date, active=True):
         self.book_id = book_id
         self.room_num = room_num
         self.customer_id = customer_id
         self.start_date = start_date
         self.end_date = end_date
+        self.active = active
 
     def get_room(self):
         import db
         return db.get_room_from_num(self.room_num)
 
     def create_booking(self):
-        sql = f"INSERT INTO Book VALUES (NULL, '{self.room_num}', '{self.customer_id}', '{self.start_date}', '{self.end_date}')"
+        sql = f"INSERT INTO Book VALUES (NULL, '{self.room_num}', '{self.customer_id}', '{self.start_date}', '{self.end_date}', '{self.active}')"
         self.execute(sql)
+
 
     def starts_in_past(self):
         today = datetime.datetime.today().date()
@@ -219,6 +237,9 @@ class Book(ExecutesSQL):
     def convert_to_rental(self):
         rental = Rent(self.book_id, self.room_num, self.customer_id, self.start_date, self.end_date)
         rental.create_rental()
+        self.active = False
+        sql = f"UPDATE Book SET active=False WHERE book_id='{self.book_id}'"
+        self.execute(sql)
 
 
 class Room(ExecutesSQL):
@@ -248,8 +269,9 @@ class Room(ExecutesSQL):
         rows = self.execute(sql)
         bookings = []
         for row in rows:
-            booking = Book(row["book_id"], row["room_num"], row["customer_id"], row["start_date"], row["end_date"])
-            bookings.append(booking)
+            booking = Book(row["book_id"], row["room_num"], row["customer_id"], row["start_date"], row["end_date"], row["active"])
+            if booking.active:
+                bookings.append(booking)
         return bookings
 
     def get_unavailable_days_for_room(self):
