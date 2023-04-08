@@ -76,6 +76,7 @@ def login():
                 return render_template('login.html')
             else:
                 session["current_emp_id"] = value
+                session["position"] = db.get_employee(value).position
                 return redirect(url_for("rent_room"))
 
         if session["cust_or_emp"] == "customer":
@@ -209,8 +210,8 @@ def room_search():
                                hotel_chain=hotel_chain,
                                hotel_stars=hotel_stars,
                                num_rooms_in_hotel=num_rooms_in_hotel,
-                               price_of_room=price_of_room, role=session["cust_or_emp"])
-    return render_template('room_list.html', rooms=list_of_rooms, areas=areas, role=session["cust_or_emp"])
+                               price_of_room=price_of_room)
+    return render_template('room_list.html', rooms=list_of_rooms, areas=areas)
 
 
 @app.route('/book_room/<room_num>', methods=["GET", "POST"])
@@ -304,7 +305,7 @@ def delete_account():
 @app.route('/rent_room', methods=["GET", "POST"])
 def rent_room():
     list_of_rooms = []
-    return render_template('room_list.html', rooms=list_of_rooms, role=session["cust_or_emp"])
+    return render_template('room_list.html', rooms=list_of_rooms)
 
 
 @app.route('/employee_account', methods=["GET", "POST"])
@@ -344,7 +345,7 @@ def add_hotel():
 @app.route('/room_list')
 def room_list():
     list_of_rooms = []
-    return render_template('room_list.html', rooms=list_of_rooms, role=session["cust_or_emp"])
+    return render_template('room_list.html', rooms=list_of_rooms)
 
 
 @app.route('/edit_room')
