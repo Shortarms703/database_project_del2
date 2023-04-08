@@ -65,10 +65,10 @@ def init_hotels():
 
 def init_rooms():
     hotels = execute("SELECT hotel_id FROM Hotel")
-    unique_room_nums = random.sample(range(100, 999), 200)
+    # unique_room_nums = random.sample(range(100, 999), 200)
     for hotel in hotels:
         for i in range(1, 6):
-            room_num = unique_room_nums.pop(0) # basically take hotel ID digit 1 and add to a random number
+            #room_num = unique_room_nums.pop(0) # basically take hotel ID digit 1 and add to a random number
             price = float(random.randint(150, 700))
             capacity = i # wrote this explicitly just for clarity
             view = random.choice(["City", "Interior", "Water", "Park"])
@@ -78,7 +78,7 @@ def init_rooms():
 
             execute(
                 "INSERT INTO Room (room_num, hotel_id, price, capacity, view, amenities, problems, extendable) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
-                (room_num, hotel[0], price, capacity, view, amenities, problems, extendable[0]))
+                (None, hotel[0], price, capacity, view, amenities, problems, extendable[0]))
 
 
 

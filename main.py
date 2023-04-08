@@ -423,9 +423,20 @@ def edit_room(room_num):
         room.update()
     return render_template('edit_room_info.html', room = room)
 
-@app.route('/add_room')
-def add_room():
-    return render_template('add_room.html')
+@app.route('/add_room/<hotel_id>', methods=["GET", "POST"])
+def add_room(hotel_id):
+    hotel_name = db.get_hotel(hotel_id).hotel_name
+    if request.method == "POST":
+        price = request.form["price"]
+        capacity = request.form["price"]
+        view = request.form["price"]
+        amenities = request.form["price"]
+        problems = request.form["price"]
+        extendable = request.form["extendable"]
+        room = Room(room_num=None, hotel_id=hotel_id, price=price, capacity=capacity, view=view, amenities=amenities, problems=problems, extendable=extendable)
+        room.create_room()
+        return render_template('add_room.html', room=room, hotel_name=hotel_name)
+    return render_template('add_room.html', hotel_name=hotel_name)
 
 @app.route('/delete_room/<room_num>')
 def delete_room(room_num):

@@ -31,7 +31,7 @@ CREATE TABLE Hotel (
 );
 
 CREATE TABLE Room (
-    room_num SMALLINT PRIMARY KEY,
+    room_num INTEGER PRIMARY KEY AUTOINCREMENT,
     hotel_id INTEGER NOT NULL,
     price NUMERIC(6, 2) NOT NULL,
     capacity TINYINT NOT NULL,

@@ -249,7 +249,7 @@ class Room(ExecutesSQL):
         return str(self.__dict__)
 
     def create_room(self):
-        sql = f" insert into Room values ('{self.room_num}', '{self.hotel_id}', '{self.price}', '{self.capacity}', '{self.view}', '{self.amenities}', " \
+        sql = f" insert into Room values (NULL, '{self.hotel_id}', '{self.price}', '{self.capacity}', '{self.view}', '{self.amenities}', " \
               f"'{self.problems}', '{self.extendable}')"
         self.execute(sql)
 
