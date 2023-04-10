@@ -65,7 +65,7 @@ class Customer(ExecutesSQL):
         self.execute(sql)
 
     def get_currently_booked_rooms(self):
-        sql = f"SELECT * FROM Book WHERE customer_id='{self.customer_id}'"
+        sql = f"SELECT * FROM Book WHERE customer_id='{self.customer_id}' AND room_num IS NOT NULL"
         rows = self.execute(sql)
         booked_rooms = []
         for row in rows:
@@ -75,7 +75,7 @@ class Customer(ExecutesSQL):
         return booked_rooms
 
     def get_rented_currently_rooms(self):
-        sql = f"SELECT * FROM Rent WHERE customer_id='{self.customer_id}'"
+        sql = f"SELECT * FROM Rent WHERE customer_id='{self.customer_id}' AND room_num IS NOT NULL"
         rows = self.execute(sql)
         rented_rooms = []
         for row in rows:

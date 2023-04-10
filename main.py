@@ -86,6 +86,7 @@ def login():
                 return render_template('login.html')
             else:
                 session["current_cust_id"] = value
+                session["position"] = "customer"
                 return redirect(url_for("room_search"))
 
     return render_template('login.html')

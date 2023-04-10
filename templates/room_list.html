@@ -61,7 +61,7 @@
     }
 </style>
 
-{% set is_manager = (session["position"]|lower|replace(' ', '') == 'manager') %}
+<!-- {% set is_manager = ('position' in session) and (session['position']|lower|replace(' ', '') == 'manager') %} -->
 <!-- this is inefficient but lazy to change, for later maybe -->
 
 <h3>List of rooms:</h3>
@@ -69,6 +69,7 @@
     <tr>
         <th>Room Num</th>
         <th>Hotel Name</th>
+        <th>Chain</th>
         <th>Price</th>
         <th>Capacity</th>
         <th>View</th>
@@ -87,6 +88,7 @@
         <tr>
             <td>{{ room.room_num }}</td>
             <td>{{ room.get_hotel().hotel_name }}</td>
+            <td>{{ room.get_hotel().chain_name }}</td>
             <td>{{ room.price }}</td>
             <td>{{ room.capacity }}</td>
             <td>{{ room.view }}</td>

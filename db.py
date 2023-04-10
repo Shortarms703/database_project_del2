@@ -34,7 +34,8 @@ def init_db():
     execute_file(config.schema_file)
     # uncomment when these aren't empty:
     execute_file(config.sample_data_file)
-    # execute_file(config.sql_index_file)
+    execute_file(config.sql_index_file)
+    execute_file(config.trigger_file)
     # execute_file(config.sql_views_file)
 
 
@@ -294,7 +295,7 @@ if __name__ == '__main__':
     # room = get_room_from_num(1)
     # a = room.check_room_available("2023-04-23", "2023-04-24")
     # print(a)
-    pass
+    # pass
     # rooms = db_room_search(start_date="2023-04-10")
     # # rooms = db_room_search(end_date="2023-04-04")
     # for x in rooms:
