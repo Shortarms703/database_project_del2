@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Count By City View</title>
+</head>
+<body>
+{% include 'header.html' %}
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid;
+        padding: 3px;
+    }
+</style>
+<h3>Hotel Count By City:</h3>
+<table>
+    <tr>
+        <th>City</th>
+        <th>Number of Hotels</th>
+    </tr>
+    {% for row in table %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

@@ -32,11 +32,10 @@ def execute_file(file):
 
 def init_db():
     execute_file(config.schema_file)
-    # uncomment when these aren't empty:
     execute_file(config.sample_data_file)
     execute_file(config.sql_index_file)
     execute_file(config.trigger_file)
-    # execute_file(config.sql_views_file)
+    execute_file(config.sql_views_file)
 
 
 def init_hotels():
@@ -232,9 +231,6 @@ def get_hotel(hotel_id):
         return False
 
 def get_chain_from_employee(employee_id):
-    # employee = get_employee(employee_id)
-    # hotel_id = employee.hotel_id
-    # return get_hotel(hotel_id).chain_name
     sql = f"""
         SELECT h.chain_name
         FROM Hotel h
@@ -275,6 +271,18 @@ def get_all_areas():
 
     return unique_areas
 
+
+# FOR VIEWS
+def get_capacities_view():
+    sql = f"SELECT * FROM hotel_room_capacities"
+    rows = execute(sql)
+    capacities = [[f"{x[0]}", f"{x[1]}"] for x in rows]
+    return capacities
+
+def get_areas_view():
+    sql = f"SELECT * FROM hotel_count_by_area"
+    rows = execute(sql)
+    return [[f"{x['city']}", f"{x['hotel_count']}"] for x in rows]
 
 if __name__ == '__main__':
     a = get_all_areas()

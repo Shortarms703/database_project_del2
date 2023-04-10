@@ -300,6 +300,15 @@ def delete_account():
 
     return redirect(url_for("welcome"))
 
+@app.route('/hotels_by_area')
+def hotels_by_area():
+    table = db.get_areas_view()
+    return render_template('hotels_by_area.html', table=table)
+
+@app.route('/hotel_capacities', methods=["GET", "POST"])
+def hotel_capacities():
+    table = db.get_capacities_view()
+    return render_template('hotel_capacities.html', table=table)
 
 # EMPLOYEE STUFF
 
