@@ -438,10 +438,10 @@ def add_room(hotel_id):
     hotel_name = db.get_hotel(hotel_id).hotel_name
     if request.method == "POST":
         price = request.form["price"]
-        capacity = request.form["price"]
-        view = request.form["price"]
-        amenities = request.form["price"]
-        problems = request.form["price"]
+        capacity = request.form["capacity"]
+        view = request.form["view"]
+        amenities = request.form["amenities"]
+        problems = request.form["problems"]
         extendable = request.form["extendable"]
         room = Room(room_num=None, hotel_id=hotel_id, price=price, capacity=capacity, view=view, amenities=amenities, problems=problems, extendable=extendable)
         room.create_room()
