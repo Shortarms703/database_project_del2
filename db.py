@@ -1,6 +1,3 @@
-import config
-
-import sqlite3 as sl
 import random as random
 
 from classes import *
@@ -69,7 +66,7 @@ def init_rooms():
     # unique_room_nums = random.sample(range(100, 999), 200)
     for hotel in hotels:
         for i in range(1, 6):
-            #room_num = unique_room_nums.pop(0) # basically take hotel ID digit 1 and add to a random number
+            # room_num = unique_room_nums.pop(0) # basically take hotel ID digit 1 and add to a random number
             price = float(random.randint(150, 700))
             capacity = i # wrote this explicitly just for clarity
             view = random.choice(["Sea", "Mountain"])
@@ -211,6 +208,16 @@ def get_customer(customer_id):
     else:
         return False
 
+def get_customer_from_name(first_name, last_name):
+    sql = f"SELECT * FROM Customer WHERE first_name='{first_name}' AND last_name='{last_name}'"
+    rows = execute(sql)
+    if len(rows) == 1:
+        row = rows[0]
+        customer = get_customer(row["customer_id"])
+        return customer
+    else:
+        return False
+
 def get_employee(employee_ID):
     sql = f"SELECT * FROM Employee WHERE employee_id='{employee_ID}'"
     rows = execute(sql)
@@ -286,9 +293,9 @@ def get_areas_view():
     return [[f"{x['city']}", f"{x['hotel_count']}"] for x in rows]
 
 if __name__ == '__main__':
-    a = get_all_areas()
-    for x in a:
-        print(x)
+    # a = get_all_areas()
+    # for x in a:
+    #     print(x)
     # checking the view worked
     # result = (execute("SELECT * FROM hotel_count_by_area"))
     # for row in result:

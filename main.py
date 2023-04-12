@@ -13,6 +13,8 @@ app.secret_key = 'f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae
 def setup():
     # TODO actually call this sometime
     db.init_db()
+    db.init_hotels()
+    db.init_rooms()
 
 
 # LOGIN STUFF
@@ -77,7 +79,8 @@ def login():
             else:
                 session["current_emp_id"] = value
                 session["position"] = db.get_employee(value).position
-                return redirect(url_for("rent_room"))
+                # return redirect(url_for("rent_room"))
+                return redirect(url_for("room_search"))
 
         if session["cust_or_emp"] == "customer":
             value = db.check_if_login_valid_cust(name, password)
@@ -312,10 +315,67 @@ def hotel_capacities():
 
 # EMPLOYEE STUFF
 
-@app.route('/rent_room', methods=["GET", "POST"])
-def rent_room():
-    list_of_rooms = []
-    return render_template('room_list.html', rooms=list_of_rooms)
+@app.route('/rent_room/<room_num>', methods=["GET", "POST"])
+def rent_room(room_num):
+    room = db.get_room_from_num(room_num)
+    customer_found_message = ""
+    availability_message = ""
+    message_color = ""
+    if request.method == "POST":
+        start_date = request.form["start_date"]
+        end_date = request.form["end_date"]
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        card_number = request.form["card_number"]
+        expiration_date = request.form["expiration_date"]
+        cvv = request.form["cvv"]
+        customer = db.get_customer_from_name(first_name, last_name)
+        if not customer:
+            customer_found_message = f"Error finding customer with first name: {first_name} and last name: {last_name}"
+            message_color = "red"
+        else:
+            rental = Rent(None, room_num, customer.customer_id, start_date, end_date)
+
+
+            # checks that rental does not start in the past
+            if rental.starts_in_past():
+                availability_message = "Cannot create booking that starts in the past"
+                message_color = "red"
+
+            # check that start is before end
+            elif rental.start_date_before_end():
+                availability_message = "End date cannot come before start date"
+                message_color = "red"
+
+            # checks that room is available
+            elif not room.check_room_available(start_date, end_date):
+                availability_message = "Room is unavailable for that time period"
+                message_color = "red"
+
+            else:
+                rental.create_rental()
+                availability_message = "Room successfully booked"
+                message_color = "green"
+
+    today = datetime.datetime.today()
+    today_date = today.strftime('%Y-%m-%d')
+    tomorrow_date = (today + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+
+    unavailable_days = room.get_unavailable_days_for_room()
+    bookings = room.get_bookings()
+    return render_template('rent_room.html', room=room, unavailable_days=unavailable_days, bookings=bookings, db=db, availability_message=availability_message, message_color=message_color, today_date=today_date, tomorrow_date=tomorrow_date, customer_found_message=customer_found_message)
+
+
+@app.route('/convert_to_rental/<room_num>')
+def convert_to_rental(room_num):
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+    room = db.get_room_from_num(room_num)
+    bookings = room.get_bookings()
+    for booking in bookings:
+        if booking.start_date == start_date and booking.end_date == end_date:
+            booking.convert_to_rental()
+    return redirect(url_for("rent_room", room_num=room_num))
 
 
 @app.route('/employee_account', methods=["GET", "POST"])
@@ -342,10 +402,10 @@ def employee_account():
 # MANAGER STUFF
 
 @app.route('/edit_hotel/<hotel_id>', methods=["GET", "POST"])
-def edit_hotel(hotel_id):    
+def edit_hotel(hotel_id):
     hotel = db.get_hotel(hotel_id)
     if request.method == "POST":
-        hotel.hotel_name == request.form["hotel_name"]
+        hotel.hotel_name = request.form["hotel_name"]
         hotel.street = request.form["street"]
         hotel.city = request.form["city"]
         hotel.postal_code = request.form["postal_code"]
@@ -374,8 +434,8 @@ def add_hotel():
         city = request.form["city"]
         postal_code = request.form["postal_code"]
         country = request.form["country"]
-        
-        hotel = Hotel(NULL, chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number)
+
+        hotel = Hotel(None, chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number)
         create_success = hotel.create_hotel()
 
         if create_success:

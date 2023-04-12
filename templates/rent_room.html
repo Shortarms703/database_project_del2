@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% include 'header.html' %}
+
+Hotel: {{ room.get_hotel().hotel_name }}
+<br>
+Room Number: {{ room.room_num }}
+<br>
+Price: {{ room.price }}
+<br>
+Capacity: {{ room.capacity }}
+<br>
+View: {{ room.view }}
+<br>
+Amenities: {{ room.amenities }}
+<br>
+Problems: {{ room.problems }}
+<br>
+Extendable: {{ room.extendable }}
+<br>
+
+<form method="POST">
+    <h3>Existing bookings:</h3>
+    {% if not bookings %}
+        no existing bookings
+    {% endif %}
+    {% for booking in bookings %}
+        {% set customer = db.get_customer(booking.customer_id) %}
+        Booking for {{ customer.first_name + " " + customer.last_name }} from {{ booking.start_date }} to {{ booking.end_date }}
+        <a href="{{ url_for("convert_to_rental", room_num=room.room_num, start_date=booking.start_date, end_date=booking.end_date) }}">convert to rental</a>
+    {% endfor %}
+    <br>
+    <h3>Create new rental:</h3>
+    Start date:
+    <input type="date" name="start_date" id="start_date" value="{{ today_date }}">
+    End Date:
+    <input type="date" name="end_date" value="{{ tomorrow_date }}">
+    <br>
+    <br>
+
+    First name:
+    <input type="text" name="first_name">
+    Last name:
+    <input type="text" name="last_name">
+    <br>
+    <p style="color: {{ message_color }}">{{ customer_found_message }}</p>
+    <h4>Credit card info:</h4>
+    Card Number:
+    <input type="number" name="card_number">
+    Expiration date mm/yy:
+    <input type="text" name="expiration_date">
+    CVV:
+    <input type="number" name="cvv">
+<br>
+<p style="color: {{ message_color }}">{{ availability_message}}</p>
+<br>
+<br>
+    <button type="submit">Rent Room</button>
+</form>
+</body>
+</html>
