@@ -136,11 +136,7 @@ class Hotel(ExecutesSQL):
     def create_hotel(self):
         sql = "INSERT INTO Hotel (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
         values = (self.chain_name, self.hotel_name, self.star_num, self.street, self.city, self.postal_code, self.country, self.email, self.phone_number)
-        result = self.execute(sql, values)
-        if result:
-            return True
-        else:
-            return False
+        self.execute(sql, values)
 
     def update(self):
         sql = f"UPDATE Hotel SET hotel_name = '{self.hotel_name}', star_num = '{self.star_num}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', email = '{self.email}', phone_number = '{self.phone_number}' WHERE hotel_id='{self.hotel_id}'"
@@ -150,8 +146,9 @@ class Hotel(ExecutesSQL):
         # from classes.chain import Chain
         sql = f"SELECT * FROM Chain WHERE name = '{self.chain_name}'"
         row = self.execute(sql, one=True)
-        chain = Chain(row["name"], row["street"], row["city"], row["postal_code"], row["country"], row["email"],
-                      row["phone_number"])
+        if row:
+            chain = Chain(row["name"], row["street"], row["city"], row["postal_code"], row["country"], row["email"],
+                        row["phone_number"])
         return chain
 
     def get_rooms(self):
