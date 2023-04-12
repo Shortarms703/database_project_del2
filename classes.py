@@ -107,6 +107,7 @@ class Employee(ExecutesSQL):
 
     def update(self):
         sql = f"UPDATE Employee SET password = '{self.password}', hotel_id = '{self.hotel_id}', SIN = '{self.SIN}', first_name = '{self.first_name}', last_name = '{self.last_name}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', position = '{self.position}' WHERE employee_id='{self.employee_id}'"
+
         self.execute(sql)
 
     def get_chain(self):
@@ -323,27 +324,4 @@ class Room(ExecutesSQL):
 
 
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-
-    # Example data
-    x = ['Morally wrong', 'Prohibited', 'Ethical use']
-    y = [41, 27, 48]
-
-    # Create a figure and axis object
-    fig, ax = plt.subplots()
-
-    # Create a scatter plot with dots
-    ax.scatter(x, y, color='blue')
-
-    # Set x and y labels
-    ax.set_xlabel('Attitudes towards AI tools')
-    ax.set_ylabel('Percentage of respondents')
-
-    # Set the y-axis limit
-    ax.set_ylim(0, 60)
-
-    # Add horizontal gridlines
-    ax.yaxis.grid(True)
-
-    # Show the plot
-    plt.show()
+    pass

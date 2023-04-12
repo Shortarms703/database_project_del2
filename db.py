@@ -61,6 +61,10 @@ def init_hotels():
                 "INSERT INTO Hotel (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number))
 
+            # hiring new manager for the hotel
+            latest_hotel = get_hotels_from_chain(chain_name)[-1]
+            hire_manager(latest_hotel.hotel_id)
+
 def init_rooms():
     hotels = execute("SELECT hotel_id FROM Hotel")
     # unique_room_nums = random.sample(range(100, 999), 200)
@@ -223,7 +227,7 @@ def get_employee(employee_ID):
     rows = execute(sql)
     if rows:
         row = rows[0]
-        employee = Employee(row["SIN"], row["first_name"], row["last_name"], row["hotel_id"], row["password"], row["employee_id"], row["street"], row["city"], row["postal_code"], row["country"],  row["position"], )
+        employee = Employee(row["SIN"], row["first_name"], row["last_name"], row["hotel_id"], row["password"], row["employee_id"], row["street"], row["city"], row["postal_code"], row["country"],  row["position"])
         return employee
     else:
         return False
@@ -278,6 +282,31 @@ def get_all_areas():
             unique_areas.append(area)
 
     return unique_areas
+
+
+def hire_manager(hotel_id):
+    # employee_ID
+    hotel = get_hotel(hotel_id)
+    chain = hotel.get_chain()
+    password = random.randint(1000, 9999)
+    SIN = random.randint(100000000, 999999999)
+    first_name = random.choice(["Emma", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Jackson", "Isabella", "Aiden", "Mia", "Lucas", "Charlotte", "Mason", "Amelia", "Logan", "Harper", "Jacob", "Evelyn", "Elijah"])
+    last_name = random.choice(["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Perez", "Wilson", "Anderson", "Thomas", "Jackson", "White", "Harris"])
+    street_number = str(random.randint(1, 9999))
+    street_name = random.choice(
+        ["Main", "Oak", "Maple", "Elm", "Cedar", "Pine", "Spruce", "Birch"])
+    street_type = random.choice(
+        ["St", "Ave", "Blvd", "Rd", "Ln", "Dr"])
+    street = f"{street_number} {street_name} {street_type}"
+    city = random.choice(
+        ["Los Angeles", "New York", "Chicago", "Seattle", "San Jose", "Austin", "Las Vegas", "Nashville", "Denver",
+         "Detroit", "El Paso", "Memphis", "Sacramento", "Tulsa", "Omaha"])
+    postal_code = str(int(chain.postal_code) + random.randint(0, 9))
+    country = chain.country
+    position = "manager"
+    # employee = Employee(SIN, first_name, last_name, hotel_id, password, street, city, postal_code, country, position)
+    employee = Employee(SIN, first_name, last_name, hotel_id, password, None, street, city, postal_code, country, position)
+    employee.create_emp()
 
 
 # FOR VIEWS

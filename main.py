@@ -438,6 +438,9 @@ def add_hotel():
         hotel = Hotel(None, chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number)
         create_success = hotel.create_hotel()
 
+        latest_hotel = db.get_hotels_from_chain(chain_name)[-1]
+        db.hire_manager(latest_hotel.hotel_id)
+
         if create_success:
             return redirect(url_for("add_hotel"))
 
