@@ -133,9 +133,9 @@ class Hotel(ExecutesSQL):
         self.phone_number = phone_number
 
     def create_hotel(self):
-        sql = f" insert into Hotel values ('{self.hotel_id}', '{self.chain_name}', '{self.hotel_name}', '{self.star_num}', '{self.street}', '{self.city}', " \
-              f"'{self.postal_code}', '{self.country}', '{self.email}', '{self.phone_number}')"
-        result = self.execute(sql)
+        sql = "INSERT INTO Hotel (chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        values = (self.chain_name, self.hotel_name, self.star_num, self.street, self.city, self.postal_code, self.country, self.email, self.phone_number)
+        result = self.execute(sql, values)
         if result:
             return True
         else:
