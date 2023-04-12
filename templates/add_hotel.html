@@ -2,9 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Add Hotel</title>
 </head>
 <body>
-add hotel
+{% include "header.html" %}
+{% if create_success %}
+    <script>
+        alert("Hotel created successfully!");
+    </script>
+{% endif %}
+<form method="POST">
+    Chain Name: <select name="chain_name">
+        <option value="{{chain}}">{{chain}}</option>
+    </select>
+    <br><br>
+    Hotel Name: <input name="hotel_name" type="text">
+    <br><br>
+    Number of Stars: <input name="star_num" type="number" min="0" >
+    <br><br>
+    Email: <input name="email" type="email">
+    <br><br>
+    Phone: <input name="phone_number" type="tel">
+    <br><br>
+
+    <div style = font-size:30px>
+        Address
+    </div>
+    <br>
+    street: <input name="street" type="text" >
+    <br><br>
+    city: <input name="city" type="text" >
+    <br><br>
+    postal_code: <input name="postal_code" type="text" >
+    <br><br>
+    country: <input name="country" type="text">
+    <br><br>
+
+    <button type="submit">Submit</button>
+</form>
 </body>
 </html>

@@ -32,10 +32,10 @@ def execute_file(file):
 
 def init_db():
     execute_file(config.schema_file)
-    # uncomment when these aren't empty:
     execute_file(config.sample_data_file)
-    # execute_file(config.sql_index_file)
-    # execute_file(config.sql_views_file)
+    execute_file(config.sql_index_file)
+    execute_file(config.trigger_file)
+    execute_file(config.sql_views_file)
 
 
 def init_hotels():
@@ -65,10 +65,10 @@ def init_hotels():
 
 def init_rooms():
     hotels = execute("SELECT hotel_id FROM Hotel")
-    unique_room_nums = random.sample(range(100, 999), 200)
+    # unique_room_nums = random.sample(range(100, 999), 200)
     for hotel in hotels:
         for i in range(1, 6):
-            room_num = unique_room_nums.pop(0) # basically take hotel ID digit 1 and add to a random number
+            #room_num = unique_room_nums.pop(0) # basically take hotel ID digit 1 and add to a random number
             price = float(random.randint(150, 700))
             capacity = i # wrote this explicitly just for clarity
             view = random.choice(["City", "Interior", "Water", "Park"])
@@ -78,7 +78,7 @@ def init_rooms():
 
             execute(
                 "INSERT INTO Room (room_num, hotel_id, price, capacity, view, amenities, problems, extendable) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
-                (room_num, hotel[0], price, capacity, view, amenities, problems, extendable[0]))
+                (None, hotel[0], price, capacity, view, amenities, problems, extendable[0]))
 
 
 
@@ -115,6 +115,23 @@ def db_room_search(start_date=None, end_date=None, room_capacity=None, area=None
     return search_result
 
 
+def db_hotel_search(chain_name = None, hotel_stars=None, area=None):
+    no_selection = None
+    search_result = []
+    if chain_name == no_selection:
+        return search_result
+        
+    hotels = get_hotels_from_chain(chain_name)
+    for hotel in hotels:
+        searched_for = True
+        if hotel_stars != no_selection and hotel.star_num != hotel_stars:
+            searched_for = False
+        if area != no_selection and (hotel.city != area["city"] or hotel.country != area["country"]):
+            searched_for = False
+        if searched_for:
+            search_result.append(hotel)
+    return search_result
+
 def get_all_rooms():
     sql = f"SELECT * FROM Room"
     rows = execute(sql)
@@ -125,6 +142,14 @@ def get_all_rooms():
         rooms.append(room)
     return rooms
 
+def get_hotels_from_chain(chain_name):
+    sql = f"SELECT * FROM Hotel WHERE chain_name ='{chain_name}'"
+    rows = execute(sql)
+    hotels = []
+    for row in rows:
+        hotel = Hotel(row["hotel_id"], row["chain_name"], row["hotel_name"], row["star_num"], row["street"], row["city"], row["postal_code"], row["country"], row["email"], row["phone_number"],)
+        hotels.append(hotel)
+    return hotels
 
 def get_hotel_from_create():
     sql = f"SELECT chain_name, hotel_name, hotel_id FROM Hotel, Chain WHERE Hotel.chain_name = Chain.name"
@@ -135,6 +160,13 @@ def get_hotel_from_create():
             [chain_hotel[0], chain_hotel[1], chain_hotel[2]])
     return chain_hotel_list
 
+def get_chains():
+    sql = "SELECT name FROM Chain"
+    chains = execute(sql)
+    chain_list = []
+    for chain in chains:
+        chain_list.append(chain["name"])
+    return chain_list
 
 def get_room_from_num(room_num):
     sql = f"SELECT * FROM Room WHERE room_num = '{room_num}'"
@@ -198,12 +230,42 @@ def get_employee(employee_ID):
     else:
         return False
 
+def get_hotel(hotel_id):
+    sql = f"SELECT * FROM Hotel WHERE hotel_id='{hotel_id}'"
+    rows = execute(sql)
+    if rows:
+        row = rows[0]
+        hotel = Hotel(row["hotel_id"], row["chain_name"], row["hotel_name"], row["star_num"], row["street"], row["city"], row["postal_code"], row["country"], row["email"], row["phone_number"],)
+        return hotel
+    else:
+        return False
+
+def get_chain_from_employee(employee_id):
+    sql = f"""
+        SELECT h.chain_name
+        FROM Hotel h
+        JOIN (SELECT hotel_id FROM Employee WHERE employee_id = {employee_id}) as e
+        ON h.hotel_id = e.hotel_id
+    """
+    result = execute(sql)
+    if result:
+        return result[0][0]
+    return None
+
 def delete_customer(customer_id):
     sql = f"DELETE FROM Customer WHERE customer_id='{customer_id}'"
     execute(sql)
 
 def delete_employee(employee_id):
     sql = f"DELETE FROM Employee WHERE employee_id='{employee_id}'"
+    execute(sql)
+
+def delete_hotel(hotel_id):
+    sql = f"DELETE FROM Hotel WHERE hotel_id='{hotel_id}'"
+    execute(sql)
+
+def delete_room(room_num):
+    sql = f"DELETE FROM Room WHERE room_num='{room_num}'"
     execute(sql)
 
 def get_all_areas():
@@ -219,6 +281,18 @@ def get_all_areas():
 
     return unique_areas
 
+
+# FOR VIEWS
+def get_capacities_view():
+    sql = f"SELECT * FROM hotel_room_capacities"
+    rows = execute(sql)
+    capacities = [[f"{x[0]}", f"{x[1]}"] for x in rows]
+    return capacities
+
+def get_areas_view():
+    sql = f"SELECT * FROM hotel_count_by_area"
+    rows = execute(sql)
+    return [[f"{x['city']}", f"{x['hotel_count']}"] for x in rows]
 
 if __name__ == '__main__':
     # a = get_all_areas()
@@ -239,7 +313,7 @@ if __name__ == '__main__':
     # room = get_room_from_num(1)
     # a = room.check_room_available("2023-04-23", "2023-04-24")
     # print(a)
-    pass
+    # pass
     # rooms = db_room_search(start_date="2023-04-10")
     # # rooms = db_room_search(end_date="2023-04-04")
     # for x in rooms:

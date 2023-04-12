@@ -65,7 +65,7 @@ class Customer(ExecutesSQL):
         self.execute(sql)
 
     def get_currently_booked_rooms(self):
-        sql = f"SELECT * FROM Book WHERE customer_id='{self.customer_id}'"
+        sql = f"SELECT * FROM Book WHERE customer_id='{self.customer_id}' AND room_num IS NOT NULL"
         rows = self.execute(sql)
         booked_rooms = []
         for row in rows:
@@ -75,7 +75,7 @@ class Customer(ExecutesSQL):
         return booked_rooms
 
     def get_rented_currently_rooms(self):
-        sql = f"SELECT * FROM Rent WHERE customer_id='{self.customer_id}'"
+        sql = f"SELECT * FROM Rent WHERE customer_id='{self.customer_id}' AND room_num IS NOT NULL"
         rows = self.execute(sql)
         rented_rooms = []
         for row in rows:
@@ -109,6 +109,13 @@ class Employee(ExecutesSQL):
         sql = f"UPDATE Employee SET password = '{self.password}', hotel_id = '{self.hotel_id}', SIN = '{self.SIN}', first_name = '{self.first_name}', last_name = '{self.last_name}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', position = '{self.position}' WHERE employee_id='{self.employee_id}'"
         self.execute(sql)
 
+    def get_chain(self):
+        sql = f"SELECT chain_name FROM Hotel WHERE hotel_id= '{self.hotel_id}'"
+        result = self.execute(sql)
+        chain_name = None
+        if result:
+            chain_name = result[0][0]
+        return chain_name
 
 class Hotel(ExecutesSQL):
 
@@ -124,6 +131,19 @@ class Hotel(ExecutesSQL):
         self.country = country
         self.email = email
         self.phone_number = phone_number
+
+    def create_hotel(self):
+        sql = f" insert into Hotel values ('{self.hotel_id}', '{self.chain_name}', '{self.hotel_name}', '{self.star_num}', '{self.street}', '{self.city}', " \
+              f"'{self.postal_code}', '{self.country}', '{self.email}', '{self.phone_number}')"
+        result = self.execute(sql)
+        if result:
+            return True
+        else:
+            return False
+
+    def update(self):
+        sql = f"UPDATE Hotel SET hotel_name = '{self.hotel_name}', star_num = '{self.star_num}', street = '{self.street}', city = '{self.city}', postal_code = '{self.postal_code}', country = '{self.country}', email = '{self.email}', phone_number = '{self.phone_number}' WHERE hotel_id='{self.hotel_id}'"
+        self.execute(sql)
 
     def get_chain(self):
         # from classes.chain import Chain
@@ -256,6 +276,15 @@ class Room(ExecutesSQL):
 
     def __repr__(self):
         return str(self.__dict__)
+
+    def create_room(self):
+        sql = f" insert into Room values (NULL, '{self.hotel_id}', '{self.price}', '{self.capacity}', '{self.view}', '{self.amenities}', " \
+              f"'{self.problems}', '{self.extendable}')"
+        self.execute(sql)
+
+    def update(self):
+        sql = f"UPDATE Room SET price = '{self.price}', capacity = '{self.capacity}', view = '{self.view}', amenities = '{self.amenities}', problems = '{self.problems}', extendable = '{self.extendable}' WHERE room_num='{self.room_num}'"
+        self.execute(sql)
 
     def get_hotel(self) -> Hotel:
         sql = f"SELECT * FROM Hotel WHERE hotel_id = '{self.hotel_id}'"

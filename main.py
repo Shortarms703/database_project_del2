@@ -78,6 +78,8 @@ def login():
                 return render_template('login.html')
             else:
                 session["current_emp_id"] = value
+                session["position"] = db.get_employee(value).position
+                # return redirect(url_for("rent_room"))
                 return redirect(url_for("room_search"))
 
         if session["cust_or_emp"] == "customer":
@@ -87,6 +89,7 @@ def login():
                 return render_template('login.html')
             else:
                 session["current_cust_id"] = value
+                session["position"] = "customer"
                 return redirect(url_for("room_search"))
 
     return render_template('login.html')
@@ -152,9 +155,11 @@ def create_employee():
 
 @app.route('/room_search', methods=["GET", "POST"])
 def room_search():
+    # checks that you are logged in as a customer
     list_of_rooms = db.get_all_rooms()
     areas = db.get_all_areas()
     if request.method == "POST":
+        # print(request.form.to_dict())
         if request.form["start_date"] == "":
             start_date = None
         else:
@@ -298,6 +303,15 @@ def delete_account():
 
     return redirect(url_for("welcome"))
 
+@app.route('/hotels_by_area')
+def hotels_by_area():
+    table = db.get_areas_view()
+    return render_template('hotels_by_area.html', table=table)
+
+@app.route('/hotel_capacities', methods=["GET", "POST"])
+def hotel_capacities():
+    table = db.get_capacities_view()
+    return render_template('hotel_capacities.html', table=table)
 
 # EMPLOYEE STUFF
 
@@ -387,15 +401,48 @@ def employee_account():
 
 # MANAGER STUFF
 
-@app.route('/edit_hotel')
-def edit_hotel():
-    # edit/delete hotel
-    return render_template('edit_hotel.html')
+@app.route('/edit_hotel/<hotel_id>', methods=["GET", "POST"])
+def edit_hotel(hotel_id):
+    hotel = db.get_hotel(hotel_id)
+    if request.method == "POST":
+        hotel.hotel_name == request.form["hotel_name"]
+        hotel.street = request.form["street"]
+        hotel.city = request.form["city"]
+        hotel.postal_code = request.form["postal_code"]
+        hotel.country = request.form["country"]
+        hotel.email = request.form["email"]
+        hotel.phone_number = request.form["phone_number"]
+        hotel.update()
+        # return redirect(url_for("edit_hotel"))
+    return render_template('edit_hotel.html', hotel = hotel)
 
+@app.route('/delete_hotel/<int:hotel_id>')
+def delete_hotel(hotel_id):
+    db.delete_hotel(hotel_id)
+    return redirect(url_for("rent_room")) #not really sure abt where to go after this
 
-@app.route('/add_hotel')
+@app.route('/add_hotel',  methods=["GET", "POST"])
 def add_hotel():
-    return render_template('add_hotel.html')
+    create_success = False
+    if request.method == "POST":
+        chain_name = request.form["chain_name"]
+        hotel_name = request.form["hotel_name"]
+        star_num = request.form["star_num"]
+        email = request.form["email"]
+        phone_number = request.form["phone_number"]
+        street = request.form["street"]
+        city = request.form["city"]
+        postal_code = request.form["postal_code"]
+        country = request.form["country"]
+
+        hotel = Hotel(NULL, chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number)
+        create_success = hotel.create_hotel()
+
+        if create_success:
+            return redirect(url_for("add_hotel"))
+
+    chain = db.get_chain_from_employee(session["current_emp_id"])
+    return render_template('add_hotel.html', chain=chain, create_success=create_success)
 
 
 @app.route('/room_list')
@@ -403,16 +450,68 @@ def room_list():
     list_of_rooms = []
     return render_template('room_list.html', rooms=list_of_rooms)
 
+@app.route('/hotel_list')
+def hotel_list():
+    chain_name = db.get_employee(session["current_emp_id"]).get_chain()
+    list_of_hotels = db.get_hotels_from_chain(chain_name)
+    return render_template('hotel_list.html', hotels=list_of_hotels)
 
-@app.route('/edit_room')
-def edit_room():
-    return render_template('edit_room_info.html')
+@app.route('/hotel_search', methods=["GET", "POST"])
+def hotel_search():
+    employee = db.get_employee(session["current_emp_id"])
+    chain_name = employee.get_chain()
+    list_of_hotels = db.get_hotels_from_chain(chain_name)
+    areas = db.get_all_areas()
+    if request.method == "POST":
+        if request.form["area"] == "":
+                area = None
+        else:
+            area = request.form["area"].split(', ')
+            area = {"city": area[0], "country": area[1]}
+            string_area = area["city"] + ", " + area["country"]
+
+        if request.form["hotel_stars"] == "none":
+            hotel_stars = None
+        else:
+            hotel_stars = int(request.form["hotel_stars"])
+
+        list_of_hotels = db.db_hotel_search(chain_name=chain_name, hotel_stars=hotel_stars, area=area)
+        return render_template('hotel_list.html', hotels = list_of_hotels, areas = areas, area=area, chain_name=chain_name, hotel_stars=hotel_stars)
+    return render_template("hotel_list.html", hotels = list_of_hotels, areas=areas)
 
 
-@app.route('/add_room')
-def add_room():
-    return render_template('add_room.html')
+@app.route('/edit_room/<room_num>', methods=["GET", "POST"])
+def edit_room(room_num):
+    room = db.get_room_from_num(room_num)
+    if request.method == "POST":
+        room.price = request.form["price"]
+        room.capacity = request.form["capacity"]
+        room.view = request.form["view"]
+        room.amenities = request.form["amenities"]
+        room.problems = request.form["problems"]
+        room.extendable = request.form["extendable"]
+        room.update()
+    return render_template('edit_room_info.html', room = room)
 
+@app.route('/add_room/<hotel_id>', methods=["GET", "POST"])
+def add_room(hotel_id):
+    hotel_name = db.get_hotel(hotel_id).hotel_name
+    if request.method == "POST":
+        price = request.form["price"]
+        capacity = request.form["capacity"]
+        view = request.form["view"]
+        amenities = request.form["amenities"]
+        problems = request.form["problems"]
+        extendable = request.form["extendable"]
+        room = Room(room_num=None, hotel_id=hotel_id, price=price, capacity=capacity, view=view, amenities=amenities, problems=problems, extendable=extendable)
+        room.create_room()
+        return render_template('add_room.html', room=room, hotel_name=hotel_name)
+    return render_template('add_room.html', hotel_name=hotel_name)
+
+@app.route('/delete_room/<room_num>')
+def delete_room(room_num):
+    db.delete_room(room_num)
+    return redirect(url_for("rent_room"))
 
 if __name__ == '__main__':
     app.run()

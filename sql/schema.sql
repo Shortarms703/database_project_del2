@@ -27,11 +27,11 @@ CREATE TABLE Hotel (
     country VARCHAR(50),
     email VARCHAR(50),
     phone_number VARCHAR(50),
-    FOREIGN KEY(chain_name) REFERENCES Chain(name)
+    FOREIGN KEY(chain_name) REFERENCES Chain(name) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE Room (
-    room_num SMALLINT PRIMARY KEY,
+    room_num INTEGER PRIMARY KEY AUTOINCREMENT,
     hotel_id INTEGER NOT NULL,
     price NUMERIC(6, 2) NOT NULL,
     capacity TINYINT NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE Room (
     amenities VARCHAR(50),
     problems VARCHAR(50),
     extendable BOOLEAN NOT NULL,
-    FOREIGN KEY(hotel_id) REFERENCES Hotel(hotel_id)
+    FOREIGN KEY(hotel_id) REFERENCES Hotel(hotel_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Customer(
@@ -54,7 +54,7 @@ CREATE TABLE Customer(
     postal_code VARCHAR(50),
     country VARCHAR(50),
     registration_date DATE NOT NULL,
-    FOREIGN KEY(hotel_id) REFERENCES Hotel(hotel_id)
+    FOREIGN KEY(hotel_id) REFERENCES Hotel(hotel_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Employee(
@@ -69,26 +69,28 @@ CREATE TABLE Employee(
     postal_code VARCHAR(50),
     country VARCHAR(50),
     position VARCHAR(20), -- unsure
-    FOREIGN KEY(hotel_id) REFERENCES Hotel(hotel_id)
+    FOREIGN KEY(hotel_id) REFERENCES Hotel(hotel_id) ON DELETE SET NULL
 );
 
 CREATE TABLE Book(
     book_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    room_num SMALLINT NOT NULL,
-    customer_id INTEGER NOT NULL,
+    room_num SMALLINT,
+    customer_id INTEGER,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY(room_num) REFERENCES Room(room_num),
     FOREIGN KEY(customer_id) REFERENCES Customer(customer_id)
+    FOREIGN KEY(room_num) REFERENCES Room(room_num) ON DELETE SET NULL,
+    FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE SET NULL
 );
 
 CREATE TABLE Rent(
     rent_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    room_num SMALLINT NOT NULL,
-    customer_id INTEGER NOT NULL,
+    room_num SMALLINT,
+    customer_id INTEGER,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
-	FOREIGN KEY(room_num) REFERENCES Room(room_num),
-    FOREIGN KEY(customer_id) REFERENCES Customer(customer_id)
+	FOREIGN KEY(room_num) REFERENCES Room(room_num) ON DELETE SET NULL,
+    FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE SET NULL
 );

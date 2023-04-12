@@ -60,11 +60,16 @@
         padding: 3px;
     }
 </style>
+
+<!-- {% set is_manager = ('position' in session) and (session['position']|lower|replace(' ', '') == 'manager') %} -->
+<!-- this is inefficient but lazy to change, for later maybe -->
+
 <h3>List of rooms:</h3>
 <table>
     <tr>
         <th>Room Num</th>
         <th>Hotel Name</th>
+        <th>Chain</th>
         <th>Price</th>
         <th>Capacity</th>
         <th>View</th>
@@ -75,11 +80,15 @@
         <th>Number of rooms in hotel</th>
         <th>Hotel Stars</th>
         <th>Book Room</th>
+        {% if is_manager %}
+            <th>Edit Room</th>
+        {% endif %}
     </tr>
     {% for room in rooms %}
         <tr>
             <td>{{ room.room_num }}</td>
             <td>{{ room.get_hotel().hotel_name }}</td>
+            <td>{{ room.get_hotel().chain_name }}</td>
             <td>{{ room.price }}</td>
             <td>{{ room.capacity }}</td>
             <td>{{ room.view }}</td>
@@ -96,6 +105,9 @@
                     <a href="{{ url_for("rent_room", room_num=room.room_num) }}">Rent Room</a>
                 {% endif %}
             </td>
+            {% if is_manager %}
+                <td><a href="{{ url_for("edit_room", room_num = room.room_num) }}">Edit Room</a></td>
+            {% endif %}
         </tr>
     {% endfor %}
 </table>

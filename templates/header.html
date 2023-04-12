@@ -21,7 +21,7 @@
             color: white;
             text-decoration: none;
             margin-left: 20px;
-        {#font-size: 18px;#}
+        /* {#font-size: 18px;#} */
         }
 
         header a:hover {
@@ -31,20 +31,23 @@
 </head>
 <body>
 <header>
-    {% if session["cust_or_emp"] == "customer" %}
-        <nav>
-        <a href="{{ url_for("room_search") }}">Book a Room</a>
-        <a href="{{ url_for("customer_view_rooms") }}">View Booked Rooms</a>
-        <a href="{{ url_for("customer_account") }}">Account Details</a>
+    <nav>
+        {% if session["cust_or_emp"] == 'customer' %}
+            <a href="{{ url_for("room_search") }}">Book a Room</a>
+            <a href="{{ url_for("customer_view_rooms") }}">View Booked Rooms</a>
+            <a href="{{ url_for("customer_account") }}">Account Details</a>
+            <a href="{{ url_for("hotels_by_area")}}">Hotels by Area</a>
+            <a href="{{ url_for("hotel_capacities")}}">Hotel Capacities</a>
+        {% elif session["cust_or_emp"] == 'employee' %}
+            <a href="{{ url_for("room_search") }}">Room Search</a>
+            <a href="{{ url_for("employee_account") }}">Account Details</a>
+            {% if session["position"]|lower|replace(' ', '') == 'manager' %}
+                <a href="{{ url_for("hotel_search")}}">Edit Hotel</a>
+                <a href="{{ url_for("add_hotel")}}">Add A Hotel</a>
+            {% endif %}
+        {% endif %}
         <a href="{{ url_for("logout") }}">Logout</a>
-        </nav>{% endif %}
-    {% if session["cust_or_emp"] == "employee" %}
-        <nav>
-            <a href="{{ url_for("room_search") }}">Rent a room</a>
-            <a href="{{ url_for("employee_account") }}">Employee Details</a>
-            <a href="{{ url_for("logout") }}">Logout</a>
-        </nav>
-    {% endif %}
+    </nav>
 </header>
 </body>
 </html>

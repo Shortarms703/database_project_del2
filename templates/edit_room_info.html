@@ -2,9 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Edit Room</title>
 </head>
 <body>
-edit room info
+{% include "header.html" %}
+Hotel Name: {{ room.get_hotel().hotel_name }}
+<br>
+Room Number: {{room.room_num}}
+<br>
+
+<form method="POST">
+    Price: <input name ="price" type="number" min="0" required value="{{room.price}}">
+    Capacity: <input name ="capacity" type="number" size="5" min="0" required value="{{room.capacity}}">
+    <br>
+    View: <input name ="view" type="text" required value="{{room.view}}">
+    <br>
+    Amenities: <input name ="amenities" type="text" value="{{room.amenities}}">
+    <br>
+    Problems: <input name ="problems" type="text" value="{{room.problems}}">
+    <br>
+    Extendable: <select name="extendable" id="extendable" value="{{room.extendable}}">
+        <option value="True">Yes</option>
+        <option value="False">No</option>
+    </select>
+    <br>
+    <button type="submit">Update</button>
+</form>
+<a href="{{ url_for("delete_room", room_num = room.room_num) }}" style="color: red">Delete Room</a>
 </body>
 </html>

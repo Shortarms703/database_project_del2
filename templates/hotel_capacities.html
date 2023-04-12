@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Capacity View</title>
+</head>
+<body>
+{% include 'header.html' %}
+
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid;
+        padding: 3px;
+    }
+</style>
+
+<!-- {% set is_manager = ('position' in session) and (session['position']|lower|replace(' ', '') == 'manager') %} -->
+<!-- this is inefficient but lazy to change, for later maybe -->
+
+<h3>Room Capacities:</h3>
+<table>
+    <tr>
+        <th>Hotel ID</th>
+        <th>Total Capacity</th>
+    </tr>
+    {% for row in table %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

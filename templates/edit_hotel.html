@@ -2,9 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Edit Hotel</title>
 </head>
 <body>
-edit hotel details
+{% include "header.html" %}
+Hotel ID: {{ hotel.hotel_id }}
+<br>
+Chain_name: {{ hotel.chain_name }}
+<br>
+<form method="POST">
+    hotel_name: <input name="hotel_name" type="text" value="{{ hotel["hotel_name"] }}">
+    <br><br>
+    star_num: <input name="star_num" type="number" min="0" value="{{ hotel["star_num"] }}">
+    <br><br>
+    street: <input name="street" type="text" value="{{ hotel["street"] }}">
+    <br><br>
+    city: <input name="city" type="text" value="{{ hotel["city"] }}">
+    <br><br>
+    postal_code: <input name="postal_code" type="text" value="{{ hotel["postal_code"] }}">
+    <br><br>
+    country: <input name="country" type="text" value="{{ hotel["country"] }}">
+    <br><br>
+    email: <input name="email" type="email" value="{{ hotel["email"] }}">
+    <br><br>
+    phone_number: <input name="phone_number" type="tel" value="{{ hotel["phone_number"] }}">
+    <br><br>
+    <button type="submit">Update</button>
+</form>
+<br>
+<a href="{{url_for("add_room", hotel_id = hotel["hotel_id"])}}">Add a Room</a>
+<br>
+<a href="{{ url_for("delete_hotel", hotel_id = hotel["hotel_id"]) }}" style="color: red">Delete Hotel</a>
 </body>
 </html>
