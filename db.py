@@ -54,7 +54,8 @@ def init_hotels():
                 ["St", "Ave", "Blvd", "Rd", "Ln", "Dr"])
             street = f"{street_number} {street_name} {street_type}"
 
-            city = chain[2]
+            city = random.choice(
+                ["Los Angeles", "New York", "Chicago", "Seattle", "San Jose", "Austin", "Las Vegas", "Nashville", "Denver", "Detroit", "El Paso", "Memphis", "Sacramento", "Tulsa", "Omaha"])
             postal_code = str(int(chain[3]) + i)
             country = chain[4]
             email = f"hotel{i}@{chain_name}.com"
@@ -71,7 +72,7 @@ def init_rooms():
             #room_num = unique_room_nums.pop(0) # basically take hotel ID digit 1 and add to a random number
             price = float(random.randint(150, 700))
             capacity = i # wrote this explicitly just for clarity
-            view = random.choice(["City", "Interior", "Water", "Park"])
+            view = random.choice(["Sea", "Mountain"])
             amenities = ', '.join(random.choices(["Wifi", "Breakfast", "Pool", "Free Laundry"], weights=[10, 6, 4, 1], k=2))
             problems = ', '.join(random.choices(["None", "Leak", "Electrical", "Furniture Damage", "Window"], weights=[90, 3, 3, 2, 2], k=1))
             extendable = random.choices([True, False], weights=[20, 80], k=1)
