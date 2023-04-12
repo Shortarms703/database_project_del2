@@ -1,6 +1,3 @@
-import config
-
-import sqlite3 as sl
 import random as random
 
 from classes import *
@@ -68,9 +65,9 @@ def init_rooms():
     # unique_room_nums = random.sample(range(100, 999), 200)
     for hotel in hotels:
         for i in range(1, 6):
-            #room_num = unique_room_nums.pop(0) # basically take hotel ID digit 1 and add to a random number
+            # room_num = unique_room_nums.pop(0) # basically take hotel ID digit 1 and add to a random number
             price = float(random.randint(150, 700))
-            capacity = i # wrote this explicitly just for clarity
+            capacity = i  # wrote this explicitly just for clarity
             view = random.choice(["City", "Interior", "Water", "Park"])
             amenities = ', '.join(random.choices(["Wifi", "Breakfast", "Pool", "Free Laundry"], weights=[10, 6, 4, 1], k=2))
             problems = ', '.join(random.choices(["None", "Leak", "Electrical", "Furniture Damage", "Window"], weights=[90, 3, 3, 2, 2], k=1))

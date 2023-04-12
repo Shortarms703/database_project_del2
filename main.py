@@ -405,7 +405,7 @@ def employee_account():
 def edit_hotel(hotel_id):
     hotel = db.get_hotel(hotel_id)
     if request.method == "POST":
-        hotel.hotel_name == request.form["hotel_name"]
+        hotel.hotel_name = request.form["hotel_name"]
         hotel.street = request.form["street"]
         hotel.city = request.form["city"]
         hotel.postal_code = request.form["postal_code"]
@@ -435,7 +435,7 @@ def add_hotel():
         postal_code = request.form["postal_code"]
         country = request.form["country"]
 
-        hotel = Hotel(NULL, chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number)
+        hotel = Hotel(None, chain_name, hotel_name, star_num, street, city, postal_code, country, email, phone_number)
         create_success = hotel.create_hotel()
 
         if create_success:
