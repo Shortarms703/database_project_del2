@@ -1,4 +1,5 @@
 import datetime
+import sqlite3 as sl
 
 import db
 
@@ -6,15 +7,13 @@ from flask import Flask, request, render_template, session, redirect, url_for
 
 from classes import Book, Chain, Customer, Employee, Hotel, Rent, Room
 
+
+# makes sure the database and all its tables are created, otherwise deletes all tables if they exist and recreate the database
+db.setup()
+
 app = Flask(__name__)
 app.secret_key = 'f796d2d8943e04e26f93a27802d72d369f47f310f7533e8a2d6a6bdb27c8ae0a'
 
-
-def setup():
-    # TODO actually call this sometime
-    db.init_db()
-    db.init_hotels()
-    db.init_rooms()
 
 
 # LOGIN STUFF
@@ -448,11 +447,6 @@ def add_hotel():
     return render_template('add_hotel.html', chain=chain, create_success=create_success)
 
 
-@app.route('/room_list')
-def room_list():
-    list_of_rooms = []
-    return render_template('room_list.html', rooms=list_of_rooms)
-
 @app.route('/hotel_list')
 def hotel_list():
     chain_name = db.get_employee(session["current_emp_id"]).get_chain()
@@ -467,7 +461,7 @@ def hotel_search():
     areas = db.get_all_areas()
     if request.method == "POST":
         if request.form["area"] == "":
-                area = None
+            area = None
         else:
             area = request.form["area"].split(', ')
             area = {"city": area[0], "country": area[1]}

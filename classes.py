@@ -146,9 +146,7 @@ class Hotel(ExecutesSQL):
         # from classes.chain import Chain
         sql = f"SELECT * FROM Chain WHERE name = '{self.chain_name}'"
         row = self.execute(sql, one=True)
-        if row:
-            chain = Chain(row["name"], row["street"], row["city"], row["postal_code"], row["country"], row["email"],
-                        row["phone_number"])
+        chain = Chain(row["name"], row["street"], row["city"], row["postal_code"], row["country"], row["email"], row["phone_number"])
         return chain
 
     def get_rooms(self):

@@ -27,6 +27,24 @@ def execute_file(file):
         conn.close()
 
 
+def setup():
+    create_database = False
+    try:
+        rows = execute(f"SELECT name FROM sqlite_master WHERE type='table'")
+        tables = ["Book", "Chain", "Customer", "Employee", "Hotel", "Rent", "Room"]
+        for table in tables:
+            if table not in [x["name"] for x in rows]:
+                create_database = True
+    except sl.Error as e:
+        raise e
+
+    if create_database:
+        print("Creating the database and inserting sample data...")
+        init_db()
+        init_hotels()
+        init_rooms()
+
+
 def init_db():
     execute_file(config.schema_file)
     execute_file(config.sample_data_file)
@@ -304,7 +322,6 @@ def hire_manager(hotel_id):
     postal_code = str(int(chain.postal_code) + random.randint(0, 9))
     country = chain.country
     position = "manager"
-    # employee = Employee(SIN, first_name, last_name, hotel_id, password, street, city, postal_code, country, position)
     employee = Employee(SIN, first_name, last_name, hotel_id, password, None, street, city, postal_code, country, position)
     employee.create_emp()
 
@@ -322,44 +339,6 @@ def get_areas_view():
     return [[f"{x['city']}", f"{x['hotel_count']}"] for x in rows]
 
 if __name__ == '__main__':
-    # a = get_all_areas()
-    # for x in a:
-    #     print(x)
-    # checking the view worked
-    # result = (execute("SELECT * FROM hotel_count_by_area"))
-    # for row in result:
-    #     print(row[0], row[1])
-
-    # checking capacity view
-    # execute_file(config.sql_views_file)
-    # rows = execute("SELECT * FROM room_capacity_by_hotel")
-    # for row in rows:
-    #     print(row[0], row[1], row[2])
-
-    # print(get_unavailable_days_for_room(1))
-    # room = get_room_from_num(1)
-    # a = room.check_room_available("2023-04-23", "2023-04-24")
-    # print(a)
-    # pass
-    # rooms = db_room_search(start_date="2023-04-10")
-    # # rooms = db_room_search(end_date="2023-04-04")
-    # for x in rooms:
-    #     print(x)
-    #     print(x.get_unavailable_days_for_room())
-
-    # print(rooms)
-    # print(get_room_from_num(2))
-    # get_hotel()
-    # print("searched rooms", rooms)
-    # for x in rooms:
-    #     print(x)
-    #     hotel = x.get_hotel()
-    #     print(hotel)
-    #     print(hotel.get_rooms())
-    # pass
-
-    # execute_file(config.schema_file)
-    # execute_file(config.sample_data_file)
     init_db()
     init_hotels()
     init_rooms()
