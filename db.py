@@ -262,6 +262,10 @@ def delete_employee(employee_id):
     sql = f"DELETE FROM Employee WHERE employee_id='{employee_id}'"
     execute(sql)
 
+def delete_chain(chain_name):
+    sql = f"DELETE FROM Chain WHERE name = '{chain_name}'"
+    execute(sql)
+
 def delete_hotel(hotel_id):
     sql = f"DELETE FROM Hotel WHERE hotel_id='{hotel_id}'"
     execute(sql)

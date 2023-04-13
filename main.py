@@ -516,5 +516,11 @@ def delete_room(room_num):
     db.delete_room(room_num)
     return redirect(url_for("rent_room"))
 
+@app.route('/delete_chain')
+def delete_chain():
+    chain_name = db.get_chain_from_employee(session["current_emp_id"])
+    db.delete_chain(chain_name)
+    return redirect(url_for("welcome"))
+
 if __name__ == '__main__':
     app.run()
