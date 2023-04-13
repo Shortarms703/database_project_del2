@@ -69,7 +69,7 @@ CREATE TABLE Employee(
     postal_code VARCHAR(50),
     country VARCHAR(50),
     position VARCHAR(20), -- unsure
-    FOREIGN KEY(hotel_id) REFERENCES Hotel(hotel_id) ON DELETE SET NULL
+    FOREIGN KEY(hotel_id) REFERENCES Hotel(hotel_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Book(
